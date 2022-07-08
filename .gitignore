@@ -1,0 +1,7 @@
+/build/
+/work/
+.DS_Store
+*.profraw
+*.profdata
+*.dSYM/
+__pycache__/
