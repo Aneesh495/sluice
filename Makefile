@@ -1,0 +1,24 @@
+SHELL := /bin/sh
+CC := xcrun clang
+BUILD ?= build
+SDK := $(shell xcrun --show-sdk-path)
+INCLUDES := $(addprefix -I,$(wildcard Sources/*)) -ITests/Unit
+CFLAGS := -std=gnu11 -fobjc-arc -fblocks -Wall -Wextra -Werror -Wno-unused-parameter -g -O2 -mmacosx-version-min=13.0 -isysroot $(SDK) $(INCLUDES) $(EXTRA_FLAGS)
+LDFLAGS := -framework Foundation -lsqlite3 $(EXTRA_FLAGS)
+CORE := $(shell find Sources -name '*.m' ! -path 'Sources/CLI/*' ! -path 'Sources/App/*' | sort)
+OBJECTS := $(patsubst %.m,$(BUILD)/%.o,$(CORE))
+TESTS := $(wildcard Tests/Unit/*.m)
+.PHONY: all test clean sanitize
+all: $(BUILD)/sluice
+$(BUILD)/%.o: %.m
+	@mkdir -p $(@D)
+	$(CC) $(CFLAGS) -MMD -MP -c $< -o $@
+$(BUILD)/unit: $(OBJECTS) $(TESTS)
+	$(CC) $(CFLAGS) $(TESTS) $(OBJECTS) $(LDFLAGS) -o $@
+test: $(BUILD)/unit
+	$(BUILD)/unit
+sanitize:
+	$(MAKE) BUILD=build/sanitize EXTRA_FLAGS='-fsanitize=address,undefined -fno-omit-frame-pointer -O1' test
+clean:
+	rm -rf build
+-include $(OBJECTS:.o=.d)
