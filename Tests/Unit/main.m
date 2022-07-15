@@ -13,9 +13,11 @@ void SLThrows(NSString *code, void (^body)(void)) {
     SLFail(@"test.missing-failure",[code stringByAppendingString:@" was not raised"]);
 }
 void SLTestCore(void);
+void SLTestJSON(void);
 int main(void) {
     @autoreleasepool {
         SLTestCore();
+        SLTestJSON();
         printf("# %lu tests, %lu failed\n",(unsigned long)SLTestsRun,(unsigned long)SLTestsFailed);
         return SLTestsFailed ? 1 : 0;
     }
