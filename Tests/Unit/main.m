@@ -13,12 +13,16 @@ void SLThrows(NSString *code, void (^body)(void)) {
     SLFail(@"test.missing-failure",[code stringByAppendingString:@" was not raised"]);
 }
 void SLTestCore(void);
+void SLTestScenario(void);
+void SLTestPrivacy(void);
 void SLTestParser(void);
 void SLTestHTTP(void);
 void SLTestJSON(void);
 int main(void) {
     @autoreleasepool {
         SLTestCore();
+        SLTestScenario();
+        SLTestPrivacy();
         SLTestParser();
         SLTestHTTP();
         SLTestJSON();
