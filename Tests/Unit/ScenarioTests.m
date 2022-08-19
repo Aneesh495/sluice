@@ -7,6 +7,14 @@ static SLScenario *Scenario(NSDictionary *action) {
     return [[SLScenario alloc] initWithDocument:@{@"version":@1,@"name":@"test",@"seed":@7,@"rules":@[@{@"id":@"failure",@"match":@{@"pathPrefix":@"/api"},@"after":@1,@"every":@2,@"limit":@2,@"action":action}]}];
 }
 void SLTestScenario(void) {
+    SLTest(@"validated scenario cannot be mutated through caller containers", ^{
+        NSMutableDictionary *action=[@{@"status":@503} mutableCopy];
+        SLScenario *scenario=Scenario(action);
+        action[@"status"]=@500;
+        SLMessage *original=[SLMessage response:200 body:NSData.data contentType:@"text/plain"];
+        CHECK([scenario.rules[0].action apply:original].status==503);
+        CHECK(![scenario.document isKindOfClass:NSMutableDictionary.class]);
+    });
     SLTest(@"occurrence selection is per identity with exact boundaries", ^{
         SLScenario *s=Scenario(@{@"status":@503}); SLMessage *r=[SLMessage new]; r.request=YES; r.target=@"/api/item";
         for (uint64_t i=1;i<=8;i++) CHECK(([s ruleFor:r identity:@"abc" occurrence:i]!=nil)==(i==2 || i==4));

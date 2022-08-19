@@ -36,7 +36,7 @@
         BOOL object=c=='{'; self.at++; [self space];
         NSMutableDictionary *dict=[NSMutableDictionary dictionary];
         NSMutableArray *array=[NSMutableArray array]; uint8_t end=object?'}':']';
-        if ([self peek]==end) { self.at++; return object ? (id)dict : array; }
+        if ([self peek]==end) { self.at++; return object ? (id)[dict copy] : [array copy]; }
         while (YES) {
             [self space]; NSString *key=nil;
             if (object) {
@@ -49,7 +49,7 @@
             [self space]; if ([self peek]==end) { self.at++; break; }
             [self take:','];
         }
-        return object ? (id)dict : array;
+        return object ? (id)[dict copy] : [array copy];
     }
     NSUInteger start=self.at;
     while (self.at<self.data.length && !strchr(" \t\r\n,}]",[self peek])) self.at++;

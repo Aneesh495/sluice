@@ -2,9 +2,11 @@
 #import "SLTarget.h"
 #import "SLBytes.h"
 #import "SLError.h"
+#import "SLJSON.h"
 @implementation SLMatch
 - (instancetype)initWithDocument:(NSDictionary *)document {
     if ((self=[super init])) {
+        document=SLJSONRead(SLJSONData(document));
         SLObject(document,@"match"); SLKeys(document,@[@"method",@"path",@"pathPrefix",@"headers"],@[],@"match");
         if (document[@"method"]) SLRequire(SLToken(SLString(document[@"method"],32,@"match.method")),@"scenario.match",@"Method must be an HTTP token");
         SLRequire(!(document[@"path"] && document[@"pathPrefix"]),@"scenario.match",@"path and pathPrefix are mutually exclusive");

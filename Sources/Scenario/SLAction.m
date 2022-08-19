@@ -5,6 +5,7 @@
 @implementation SLAction
 - (instancetype)initWithDocument:(NSDictionary *)document {
     if ((self=[super init])) {
+        document=SLJSONRead(SLJSONData(document));
         SLObject(document,@"action");
         SLKeys(document,@[@"status",@"bodyText",@"bodyJSON",@"headers",@"removeHeaders",@"delayMs",@"jitterMs",@"bytesPerSecond",@"chunkBytes",@"truncateAfter",@"disconnect"],@[],@"action");
         if (document[@"status"]) SLInteger(document[@"status"],200,599,@"status");

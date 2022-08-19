@@ -6,6 +6,7 @@
 @implementation SLRule
 - (instancetype)initWithDocument:(NSDictionary *)document {
     if ((self=[super init])) {
+        document=SLJSONRead(SLJSONData(document));
         SLObject(document,@"rule"); SLKeys(document,@[@"id",@"match",@"action",@"after",@"every",@"limit",@"chancePermille"],@[@"id",@"match",@"action"],@"rule");
         _identifier=[SLString(document[@"id"],128,@"rule.id") copy];
         SLRequire(SLToken(_identifier),@"scenario.id",@"Rule id must be a nonempty token");
@@ -27,6 +28,7 @@
 @implementation SLScenario
 - (instancetype)initWithDocument:(NSDictionary *)document {
     if ((self=[super init])) {
+        document=SLJSONRead(SLJSONData(document));
         SLObject(document,@"scenario"); SLKeys(document,@[@"version",@"name",@"seed",@"rules"],@[@"version",@"name",@"seed",@"rules"],@"scenario");
         SLInteger(document[@"version"],1,1,@"version"); _name=[SLString(document[@"name"],256,@"name") copy];
         SLRequire(_name.length>0,@"scenario.name",@"Scenario name cannot be empty");
