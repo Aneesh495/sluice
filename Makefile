@@ -22,3 +22,6 @@ sanitize:
 clean:
 	rm -rf build
 -include $(OBJECTS:.o=.d)
+$(BUILD)/sluice: $(OBJECTS) Sources/CLI/main.m
+	@mkdir -p $(@D)
+	$(CC) $(CFLAGS) Sources/CLI/main.m $(OBJECTS) $(LDFLAGS) -o $@
