@@ -25,3 +25,6 @@ clean:
 $(BUILD)/sluice: $(OBJECTS) Sources/CLI/main.m
 	@mkdir -p $(@D)
 	$(CC) $(CFLAGS) Sources/CLI/main.m $(OBJECTS) $(LDFLAGS) -o $@
+.PHONY: integration
+integration: $(BUILD)/sluice
+	SLUICE_BINARY=$(abspath $(BUILD)/sluice) python3 Tests/Integration/test_workbench.py

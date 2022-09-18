@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "name": "Catalog retry rehearsal",
+  "seed": 41,
+  "rules": [
+    {
+      "id": "first-attempt-unavailable",
+      "match": {"method": "GET", "pathPrefix": "/catalog"},
+      "limit": 1,
+      "action": {
+        "status": 503,
+        "bodyJSON": {"error": "catalog warming up", "retryable": true},
+        "headers": [["Retry-After", "1"]],
+        "delayMs": 80,
+        "jitterMs": 20
+      }
+    }
+  ]
+}

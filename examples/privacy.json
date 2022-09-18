@@ -1,0 +1,7 @@
+{
+  "version": 1,
+  "bodies": "json",
+  "headers": ["x-session-id"],
+  "query": ["session"],
+  "jsonKeys": ["email", "session"]
+}
