@@ -4,6 +4,10 @@
 #import "SLJSON.h"
 #import "SLBytes.h"
 #import "SLError.h"
+#import "SLBundle.h"
+#import "SLHAR.h"
+#import "SLDiff.h"
+#import "SLReport.h"
 #import <dispatch/dispatch.h>
 #import <signal.h>
 #import <sqlite3.h>
@@ -19,6 +23,11 @@ static void Help(void) {
          "plan     --workspace DIR --fixture UUID --scenario FILE [--occurrence 1]\n"
          "validate --scenario FILE | --privacy FILE\n"
          "check    --workspace DIR\n"
+         "export   --workspace DIR --output FILE [--fixture UUID]\n"
+         "import   --workspace DIR --input FILE\n"
+         "har      --workspace DIR --input FILE [--privacy FILE]\n"
+         "diff     --workspace DIR --before UUID --after UUID\n"
+         "report   --workspace DIR [--session UUID]\n"
          "doctor\n\n"
          "record and replay bind only 127.0.0.1. Use port 0 for an ephemeral port.\n"
          "Recording omits bodies by default. Opt into sanitized JSON with a privacy file.\n"
@@ -29,7 +38,7 @@ int main(int argc, const char **argv) {
         NSMutableArray *raw=[NSMutableArray array]; for (int i=1;i<argc;i++) [raw addObject:@(argv[i])];
         if (!raw.count || [@[@"help",@"--help",@"--version"] containsObject:raw[0]]) { Help(); return 0; }
         NSString *command=raw[0]; [raw removeObjectAtIndex:0];
-        NSDictionary *schemas=@{@"record":@[@"workspace",@"upstream",@"port",@"privacy",@"scenario"],@"replay":@[@"workspace",@"port",@"privacy",@"scenario",@"fixture"],@"fixtures":@[@"workspace",@"id"],@"receipts":@[@"workspace",@"limit"],@"plan":@[@"workspace",@"fixture",@"scenario",@"occurrence"],@"validate":@[@"scenario",@"privacy"],@"check":@[@"workspace"],@"doctor":@[]};
+        NSDictionary *schemas=@{@"record":@[@"workspace",@"upstream",@"port",@"privacy",@"scenario"],@"replay":@[@"workspace",@"port",@"privacy",@"scenario",@"fixture"],@"fixtures":@[@"workspace",@"id"],@"receipts":@[@"workspace",@"limit"],@"plan":@[@"workspace",@"fixture",@"scenario",@"occurrence"],@"validate":@[@"scenario",@"privacy"],@"check":@[@"workspace"],@"doctor":@[],@"export":@[@"workspace",@"output",@"fixture"],@"import":@[@"workspace",@"input"],@"har":@[@"workspace",@"input",@"privacy"],@"diff":@[@"workspace",@"before",@"after"],@"report":@[@"workspace",@"session"]};
         SLRequire(schemas[command]!=nil,@"cli.command",@"Unknown command; run sluice --help");
         SLArguments *a=[[SLArguments alloc] initWithArguments:raw values:schemas[command] flags:@[@"help"]];
         if ([a has:@"help"]) { Help(); return 0; }
@@ -45,7 +54,24 @@ int main(int argc, const char **argv) {
             Print(result); return 0;
         }
         SLStore *store=[[SLStore alloc] initWithDirectory:[a required:@"workspace"]];
-        if ([command isEqual:@"fixtures"]) {
+        if ([command isEqual:@"export"]) {
+            NSArray *fixtures=store.fixtures;
+            if ([a has:@"fixture"]) { SLFixture *f=[store fixture:[a required:@"fixture"]]; SLRequire(f!=nil,@"fixture.missing",@"No fixture has that id"); fixtures=@[f]; }
+            NSData *data=SLBundleEncode(fixtures); SLAtomicWrite(data,[a required:@"output"]);
+            Print(@{@"fixtures":@(fixtures.count),@"bytes":@(data.length),@"sha256":SLSHA256(data)});
+        } else if ([command isEqual:@"import"] || [command isEqual:@"har"]) {
+            NSData *data=SLReadFile([a required:@"input"],32*1024*1024);
+            SLPrivacy *privacy=[a has:@"privacy"] ? [[SLPrivacy alloc] initWithDocument:Document([a required:@"privacy"])] : SLPrivacy.metadataOnly;
+            NSArray *fixtures=[command isEqual:@"har"] ? SLHARImport(data,privacy) : SLBundleDecode(data);
+            [store importFixtures:fixtures]; Print(@{@"validated":@(fixtures.count),@"workspace":store.statistics});
+        } else if ([command isEqual:@"diff"]) {
+            SLFixture *before=[store fixture:[a required:@"before"]], *after=[store fixture:[a required:@"after"]];
+            SLRequire(before && after,@"fixture.missing",@"Both fixture ids must exist"); Print(SLFixtureDiff(before,after));
+        } else if ([command isEqual:@"report"]) {
+            NSArray *receipts=[store receipts:100000];
+            if ([a has:@"session"]) { NSString *session=[a required:@"session"]; receipts=[receipts filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(NSDictionary *r, NSDictionary *bindings) { return [r[@"session"] isEqual:session]; }]]; }
+            Print(SLReceiptReport(receipts));
+        } else if ([command isEqual:@"fixtures"]) {
             if ([a has:@"id"]) { SLFixture *f=[store fixture:[a required:@"id"]]; SLRequire(f!=nil,@"fixture.missing",@"No fixture has that id"); Print(f.document); }
             else { NSMutableArray *list=[NSMutableArray array]; for (SLFixture *f in store.fixtures) [list addObject:@{@"id":f.identifier,@"identity":f.identity,@"method":f.request.method,@"target":f.request.target,@"status":@(f.response.status),@"replayable":@(f.replayable),@"bodyBytes":@(f.response.body.length)}]; Print(list); }
         } else if ([command isEqual:@"receipts"]) Print([store receipts:(NSUInteger)[a integer:@"limit" fallback:100 minimum:1 maximum:100000]]);
