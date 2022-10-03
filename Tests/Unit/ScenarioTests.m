@@ -3,10 +3,22 @@
 #import "SLDeliveryPlan.h"
 #import "SLBytes.h"
 #import "SLRandom.h"
+#import "SLHTTPParser.h"
+#import "SLPrivacy.h"
 static SLScenario *Scenario(NSDictionary *action) {
     return [[SLScenario alloc] initWithDocument:@{@"version":@1,@"name":@"test",@"seed":@7,@"rules":@[@{@"id":@"failure",@"match":@{@"pathPrefix":@"/api"},@"after":@1,@"every":@2,@"limit":@2,@"action":action}]}];
 }
 void SLTestScenario(void) {
+    SLTest(@"HEAD preserves representation length through capture and replay", ^{
+        SLHTTPParser *parser=[[SLHTTPParser alloc] initRequest:NO responseToHEAD:YES];
+        [parser feed:SLUTF8(@"HTTP/1.1 200 OK\r\nContent-Length: 123\r\n\r\n")];
+        CHECK(parser.complete);
+        SLMessage *request=[SLMessage new]; request.method=@"HEAD";
+        SLMessage *replayed=SLMessageFromDocument([SLPrivacy.metadataOnly message:parser.message],NO);
+        SLDeliveryPlan *plan=[[SLDeliveryPlan alloc] initResponse:replayed request:request rule:nil scenario:SLScenario.passthrough identity:@"id" occurrence:1];
+        CHECK([SLDecodeUTF8(plan.wire) containsString:@"Content-Length: 123\r\n"]);
+        CHECK([SLDecodeUTF8(plan.wire) hasSuffix:@"\r\n\r\n"]);
+    });
     SLTest(@"validated scenario cannot be mutated through caller containers", ^{
         NSMutableDictionary *action=[@{@"status":@503} mutableCopy];
         SLScenario *scenario=Scenario(action);
