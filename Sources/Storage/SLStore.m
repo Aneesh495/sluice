@@ -2,6 +2,7 @@
 #import "SLJSON.h"
 #import "SLBytes.h"
 #import "SLError.h"
+#import "SLReceipt.h"
 #import <sqlite3.h>
 #import <sys/stat.h>
 
@@ -67,7 +68,7 @@ static void Bind(sqlite3_stmt *s, int index, NSString *text) {
     }
 }
 - (NSArray *)queryFixtures:(NSString *)value field:(NSString *)field {
-    const char *sql=[field isEqual:@"id"]?"SELECT payload,hash FROM fixtures WHERE id=? ORDER BY created,id":[field isEqual:@"identity"]?"SELECT payload,hash FROM fixtures WHERE identity=? ORDER BY created,id":"SELECT payload,hash FROM fixtures ORDER BY created,id";
+    const char *sql=[field isEqual:@"id"]?"SELECT payload,hash,id,identity,digest FROM fixtures WHERE id=? ORDER BY created,id":[field isEqual:@"identity"]?"SELECT payload,hash,id,identity,digest FROM fixtures WHERE identity=? ORDER BY created,id":"SELECT payload,hash,id,identity,digest FROM fixtures ORDER BY created,id";
     sqlite3_stmt *s=[self prepare:sql]; NSMutableArray *result=[NSMutableArray array];
     @try {
         if (value) Bind(s,1,value); int rc;
@@ -75,7 +76,12 @@ static void Bind(sqlite3_stmt *s, int index, NSString *text) {
             NSData *data=[NSData dataWithBytes:sqlite3_column_blob(s,0) length:(NSUInteger)sqlite3_column_bytes(s,0)];
             NSString *hash=@((const char *)sqlite3_column_text(s,1));
             SLRequire([SLSHA256(data) isEqual:hash],@"store.corrupt",@"Fixture payload hash mismatch");
-            [result addObject:[[SLFixture alloc] initWithDocument:SLJSONRead(data)]];
+            SLFixture *fixture=[[SLFixture alloc] initWithDocument:SLJSONRead(data)];
+            SLRequire([fixture.identifier isEqual:@((const char *)sqlite3_column_text(s,2))] &&
+                      [fixture.identity isEqual:@((const char *)sqlite3_column_text(s,3))] &&
+                      [fixture.digest isEqual:@((const char *)sqlite3_column_text(s,4))],
+                      @"store.corrupt",@"Fixture lookup metadata disagrees with validated payload");
+            [result addObject:fixture];
         }
         SLRequire(rc==SQLITE_DONE,@"store.read",@"Cannot enumerate fixtures");
     } @finally { sqlite3_finalize(s); }
@@ -86,6 +92,7 @@ static void Bind(sqlite3_stmt *s, int index, NSString *text) {
 - (NSArray *)matching:(NSString *)identity { @synchronized(self) { return [self queryFixtures:identity field:@"identity"]; } }
 - (void)saveReceipt:(NSDictionary *)receipt {
     @synchronized(self) {
+        SLValidateReceipt(receipt);
         NSString *identifier=SLString(receipt[@"id"],64,@"receipt.id");
         SLInteger(receipt[@"createdMs"],0,INT64_MAX,@"receipt.createdMs");
         NSData *data=SLJSONData(receipt); SLRequire(data.length<=65536,@"receipt.limit",@"Receipt exceeds 64 KiB");
@@ -108,7 +115,8 @@ static void Bind(sqlite3_stmt *s, int index, NSString *text) {
         @try { int rc; while ((rc=sqlite3_step(s))==SQLITE_ROW) {
             NSData *data=[NSData dataWithBytes:sqlite3_column_blob(s,0) length:(NSUInteger)sqlite3_column_bytes(s,0)];
             SLRequire([SLSHA256(data) isEqual:@((const char *)sqlite3_column_text(s,1))],@"store.corrupt",@"Receipt payload hash mismatch");
-            [result addObject:SLJSONRead(data)];
+            NSDictionary *receipt=SLJSONRead(data); SLValidateReceipt(receipt);
+            [result addObject:receipt];
         } SLRequire(rc==SQLITE_DONE,@"store.read",@"Cannot enumerate receipts"); }
         @finally { sqlite3_finalize(s); } return result;
     }

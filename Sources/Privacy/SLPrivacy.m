@@ -3,6 +3,7 @@
 #import "SLBytes.h"
 #import "SLJSON.h"
 #import "SLError.h"
+#import "SLHead.h"
 @implementation SLPrivacy {
     NSSet *_headers;
     NSSet *_query;
@@ -59,6 +60,10 @@ static NSSet *Names(NSArray *defaults, id configured, NSString *field) {
 }
 - (NSDictionary *)message:(SLMessage *)message {
     SLHeaders *headers=[self headers:message.headers]; NSData *body=NSData.data;
+    if (!message.request && !message.body.length) {
+        BOOL present=NO; NSUInteger represented=SLContentLength(message.headers,&present);
+        if (present) headers=[headers setting:@"Content-Length" value:@(represented).stringValue];
+    }
     NSString *state=message.body.length?@"omitted":@"empty";
     NSString *type=[[[message.headers first:@"Content-Type"] componentsSeparatedByString:@";"].firstObject.lowercaseString stringByTrimmingCharactersInSet:NSCharacterSet.whitespaceCharacterSet];
     NSString *encoding=[message.headers first:@"Content-Encoding"];

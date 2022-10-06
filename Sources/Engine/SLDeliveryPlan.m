@@ -3,6 +3,7 @@
 #import "SLRandom.h"
 #import "SLBytes.h"
 #import "SLError.h"
+#import "SLHead.h"
 @implementation SLDeliveryPlan {
     NSUInteger _headBytes;
     NSUInteger _bodyBytes;
@@ -17,6 +18,10 @@
         _delayUS=(action.delayMS+jitter)*1000;
         BOOL noBody=[request.method isEqual:@"HEAD"] || _response.status==204 || _response.status==304;
         NSUInteger advertised=_response.body.length;
+        if (noBody && _response.status!=204 && !advertised) {
+            BOOL present=NO; NSUInteger length=SLContentLength(_response.headers,&present);
+            if (present) advertised=length;
+        }
         NSData *body=noBody?NSData.data:_response.body;
         if (action.truncateAfter) body=[body subdataWithRange:NSMakeRange(0,MIN(body.length,action.truncateAfter.unsignedIntegerValue))];
         NSData *head=SLWireResponseHead(_response,advertised);
