@@ -28,3 +28,10 @@ $(BUILD)/sluice: $(OBJECTS) Sources/CLI/main.m
 .PHONY: integration
 integration: $(BUILD)/sluice
 	SLUICE_BINARY=$(abspath $(BUILD)/sluice) python3 Tests/Integration/test_workbench.py
+APP_SOURCES := $(wildcard Sources/App/*.m)
+.PHONY: app
+app: $(BUILD)/Sluice.app/Contents/MacOS/Sluice
+$(BUILD)/Sluice.app/Contents/MacOS/Sluice: $(OBJECTS) $(APP_SOURCES) Sources/App/Info.plist
+	@mkdir -p $(@D)
+	$(CC) $(CFLAGS) $(APP_SOURCES) $(OBJECTS) $(LDFLAGS) -framework AppKit -o $@
+	cp Sources/App/Info.plist $(BUILD)/Sluice.app/Contents/Info.plist
