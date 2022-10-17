@@ -42,6 +42,7 @@
     BOOL _terminating;
     BOOL _smoke;
     BOOL _snapshotTaken;
+    BOOL _stopRequested;
     NSString *_snapshotPath;
     NSUInteger _generation;
 }
@@ -57,7 +58,9 @@
         else if ([args[i] isEqual:@"--snapshot"] && i+1<args.count) _snapshotPath=args[++i];
     }
     [NSApp setAppearance:[NSAppearance appearanceNamed:NSAppearanceNameDarkAqua]];
-    [self menu]; [self buildWindow]; [_window makeKeyAndOrderFront:nil]; [NSApp activateIgnoringOtherApps:YES];
+    [self menu]; [self buildWindow];
+    if (_smoke) [_window orderBack:nil];
+    else { [_window makeKeyAndOrderFront:nil]; [NSApp activateIgnoringOtherApps:YES]; }
     [self refresh:nil];
     __weak SLAppController *weak=self;
     _timer=[NSTimer scheduledTimerWithTimeInterval:1 repeats:YES block:^(NSTimer *timer) { [weak refresh:nil]; }];
@@ -109,6 +112,7 @@
     NSScrollView *list=[NSScrollView new]; list.documentView=_table; list.hasVerticalScroller=YES; list.borderType=NSNoBorder;
     _inspector=[[SLInspector alloc] initWithFrame:NSZeroRect];
     NSSplitView *split=[NSSplitView new]; split.vertical=YES; split.dividerStyle=NSSplitViewDividerStyleThin; [split addArrangedSubview:list]; [split addArrangedSubview:_inspector]; [split setHoldingPriority:240 forSubviewAtIndex:0]; [split setHoldingPriority:250 forSubviewAtIndex:1];
+    NSLayoutConstraint *listWidth=[list.widthAnchor constraintEqualToConstant:560]; listWidth.priority=600; listWidth.active=YES;
     [list.widthAnchor constraintGreaterThanOrEqualToConstant:400].active=YES; [_inspector.widthAnchor constraintGreaterThanOrEqualToConstant:430].active=YES;
     _status=[SLTheme label:@"Ready. Record an HTTP dependency or import a fixture." size:11 weight:NSFontWeightRegular]; _status.textColor=SLTheme.muted;
     NSView *line=[SLTheme separator]; NSView *bottomLine=[SLTheme separator];
@@ -256,19 +260,19 @@
         SLRequire([scanner scanInt:&port] && scanner.isAtEnd && port>=0 && port<=65535,@"ui.port",@"Local port must be 0 through 65535");
         SLEndpoint *upstream=[mode isEqual:@"record"] ? [SLEndpoint parse:_upstreamField.stringValue] : nil;
         NSString *workspace=[_workspace copy]; SLPrivacy *privacy=_privacy; SLScenario *scenario=_scenario;
-        [self setServing:YES]; _status.stringValue=@"Starting local listener...";
+        _stopRequested=NO; [self setServing:YES]; _status.stringValue=@"Starting local listener...";
         dispatch_async(_networkQueue,^{ @autoreleasepool { @try {
             SLStore *store=[[SLStore alloc] initWithDirectory:workspace];
             SLSession *session=[[SLSession alloc] initMode:mode store:store privacy:privacy scenario:scenario fixture:fixture];
             SLReactor *reactor=[[SLReactor alloc] initSession:session upstream:upstream port:(uint16_t)port];
-            dispatch_async(dispatch_get_main_queue(),^{ self->_reactor=reactor; if (self->_terminating) [reactor stop]; });
+            dispatch_async(dispatch_get_main_queue(),^{ self->_reactor=reactor; if (self->_terminating || self->_stopRequested) [reactor stop]; });
             [reactor runReady:^(uint16_t actual) { dispatch_async(dispatch_get_main_queue(),^{ self->_status.stringValue=[NSString stringWithFormat:@"%@ on http://127.0.0.1:%u · %@",[mode isEqual:@"record"]?@"Recording":@"Replaying",actual,scenario.name]; }); }];
             if (reactor.fatalError) SLFail(@"reactor.storage",reactor.fatalError);
             dispatch_async(dispatch_get_main_queue(),^{ self->_reactor=nil; [self setServing:NO]; self->_status.stringValue=@"Listener stopped. Delivery receipts saved."; [self refresh:nil]; if (self->_terminating) [NSApp replyToApplicationShouldTerminate:YES]; });
         } @catch (SLError *error) { dispatch_async(dispatch_get_main_queue(),^{ self->_reactor=nil; [self setServing:NO]; if (self->_terminating) [NSApp replyToApplicationShouldTerminate:YES]; else [self error:error]; }); } }});
     } @catch (SLError *error) { [self error:error]; }
 }
-- (void)stop:(id)sender { [_reactor stop]; _status.stringValue=@"Stopping listener..."; }
+- (void)stop:(id)sender { _stopRequested=YES; [_reactor stop]; _status.stringValue=@"Stopping listener..."; }
 - (NSApplicationTerminateReply)applicationShouldTerminate:(NSApplication *)sender {
     [_timer invalidate]; _timer=nil;
     if (_serving) { _terminating=YES; [_reactor stop]; return NSTerminateLater; }
