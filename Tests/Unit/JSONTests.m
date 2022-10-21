@@ -2,6 +2,11 @@
 #import "SLJSON.h"
 #import "SLBytes.h"
 void SLTestJSON(void) {
+    SLTest(@"JSON rejects NUL bytes instead of treating them as whitespace", ^{
+        const uint8_t bytes[]={123,125,0};
+        NSData *input=[NSData dataWithBytes:bytes length:sizeof(bytes)];
+        SLThrows(@"json.syntax", ^{ SLJSONRead(input); });
+    });
     SLTest(@"strict JSON roundtrip and sorted keys", ^{
         EQUAL(SLJSONString(@{@"z":@2,@"a":@1}),@"{\"a\":1,\"z\":2}");
         EQUAL(SLJSONRead(SLUTF8(@"[true,null,1,\"snow ☃\"]")),(@[@YES,NSNull.null,@1,@"snow ☃"]));
