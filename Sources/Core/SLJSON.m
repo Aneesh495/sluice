@@ -10,7 +10,7 @@
 @end
 @implementation SLJSONReader
 - (uint8_t)peek { return self.at<self.data.length ? ((const uint8_t *)self.data.bytes)[self.at] : 0; }
-- (void)space { while (self.at<self.data.length && strchr(" \t\r\n",[self peek])) self.at++; }
+- (void)space { while (self.at<self.data.length && ([self peek]!=0 && strchr(" \t\r\n",[self peek]))) self.at++; }
 - (void)take:(uint8_t)c {
     SLRequire(self.at<self.data.length && [self peek]==c,@"json.syntax",@"Unexpected JSON delimiter"); self.at++;
 }

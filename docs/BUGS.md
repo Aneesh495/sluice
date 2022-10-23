@@ -33,3 +33,19 @@ a failing test before the fix.
 - Cause: verification compared payload bytes with their digest but did not bind
   denormalized lookup columns to the reconstructed fixture.
 - Fix: compare id, request identity, and content digest on every returned fixture.
+
+## SL-004: a NUL byte was accepted as JSON whitespace
+
+- Reproducer: `JSON rejects NUL bytes instead of treating them as whitespace`.
+- Before: a valid JSON object followed by a raw zero byte was accepted.
+- Cause: `strchr` also matches a C string's terminating zero byte.
+- Fix: exclude zero explicitly from whitespace classification. Invalid zero
+  bytes now fail as syntax errors instead of bypassing trailing-input checks.
+
+## SL-005: Stop could arrive before the app published its reactor
+
+- Trigger: start a listener and click Stop before background initialization
+  returned to the main queue.
+- Cause: messaging a not-yet-published reactor discarded the stop request.
+- Fix: latch the request on the main thread and apply it when the reactor is
+  published. The application lifecycle smoke check retains this ordering.
