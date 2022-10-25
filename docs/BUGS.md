@@ -49,3 +49,13 @@ a failing test before the fix.
 - Cause: messaging a not-yet-published reactor discarded the stop request.
 - Fix: latch the request on the main thread and apply it when the reactor is
   published. The application lifecycle smoke check retains this ordering.
+
+## SL-006: a same-second rebuild could leave a stale executable
+
+- Reproducer: the JSON NUL regression changed its object file within the same
+  timestamp tick as the test executable. macOS system make rebuilt the object
+  but skipped the link, so the old failure remained despite corrected source.
+- Cause: relying on coarse filesystem timestamps for incremental build validity.
+- Fix: object compilation checks source, headers, command, and compiler content
+  signatures; executable link steps always run. The build helper has a retained
+  same-timestamp source mutation test.
