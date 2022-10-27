@@ -14,5 +14,6 @@ FOUNDATION_EXPORT int64_t SLInteger(id value, int64_t minimum, int64_t maximum, 
 FOUNDATION_EXPORT NSString *SLString(id value, NSUInteger maximum, NSString *field);
 FOUNDATION_EXPORT NSDictionary *SLObject(id value, NSString *field);
 FOUNDATION_EXPORT NSArray *SLArray(id value, NSUInteger maximum, NSString *field);
-FOUNDATION_EXPORT void SLKeys(NSDictionary *object, NSArray<NSString *> *allowed, NSArray<NSString *> *required, NSString *field);
+FOUNDATION_EXPORT void SLKeys(NSDictionary *object, NSArray<NSString *> *allowed,
+                              NSArray<NSString *> *required, NSString *field);
 NS_ASSUME_NONNULL_END

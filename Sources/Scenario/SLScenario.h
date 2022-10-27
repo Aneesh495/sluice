@@ -20,6 +20,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property(nonatomic, readonly) NSArray<SLRule *> *rules;
 - (instancetype)initWithDocument:(NSDictionary *)document;
 + (instancetype)passthrough;
-- (nullable SLRule *)ruleFor:(SLMessage *)request identity:(NSString *)identity occurrence:(uint64_t)occurrence;
+- (nullable SLRule *)ruleFor:(SLMessage *)request
+                    identity:(NSString *)identity
+                  occurrence:(uint64_t)occurrence;
 @end
 NS_ASSUME_NONNULL_END

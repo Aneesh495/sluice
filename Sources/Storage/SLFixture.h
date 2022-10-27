@@ -9,6 +9,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property(nonatomic, readonly) SLMessage *request;
 @property(nonatomic, readonly) SLMessage *response;
 - (instancetype)initWithDocument:(NSDictionary *)document;
-+ (instancetype)captureRequest:(SLMessage *)request response:(SLMessage *)response privacy:(SLPrivacy *)privacy;
++ (instancetype)captureRequest:(SLMessage *)request
+                      response:(SLMessage *)response
+                       privacy:(SLPrivacy *)privacy;
 @end
 NS_ASSUME_NONNULL_END

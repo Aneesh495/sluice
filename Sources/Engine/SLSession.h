@@ -17,9 +17,15 @@ NS_ASSUME_NONNULL_BEGIN
 @property(nonatomic, readonly) SLStore *store;
 @property(nonatomic, readonly) SLPrivacy *privacy;
 @property(nonatomic, readonly) SLScenario *scenario;
-- (instancetype)initMode:(NSString *)mode store:(SLStore *)store privacy:(SLPrivacy *)privacy scenario:(SLScenario *)scenario fixture:(nullable NSString *)fixture;
+- (instancetype)initMode:(NSString *)mode
+                   store:(SLStore *)store
+                 privacy:(SLPrivacy *)privacy
+                scenario:(SLScenario *)scenario
+                 fixture:(nullable NSString *)fixture;
 - (SLRequestContext *)begin:(SLMessage *)request;
 - (SLMessage *)replay:(SLRequestContext *)context;
-- (SLDeliveryPlan *)complete:(SLRequestContext *)context request:(SLMessage *)request response:(SLMessage *)response;
+- (SLDeliveryPlan *)complete:(SLRequestContext *)context
+                     request:(SLMessage *)request
+                    response:(SLMessage *)response;
 @end
 NS_ASSUME_NONNULL_END

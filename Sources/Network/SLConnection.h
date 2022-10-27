@@ -2,8 +2,12 @@
 #import "SLSession.h"
 NS_ASSUME_NONNULL_BEGIN
 typedef NS_ENUM(NSInteger, SLConnectionState) {
-    SLReadingRequest, SLConnectingOrigin, SLWritingOrigin, SLReadingOrigin,
-    SLDeliveringResponse, SLConnectionClosed
+    SLReadingRequest,
+    SLConnectingOrigin,
+    SLWritingOrigin,
+    SLReadingOrigin,
+    SLDeliveringResponse,
+    SLConnectionClosed
 };
 /// The reactor is the sole descriptor owner. A connection never escapes its
 /// thread. Closing is idempotent, including exceptional destruction paths.

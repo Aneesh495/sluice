@@ -7,7 +7,10 @@ NS_ASSUME_NONNULL_BEGIN
 + (NSColor *)muted;
 + (NSFont *)mono:(CGFloat)size;
 + (NSTextField *)label:(NSString *)text size:(CGFloat)size weight:(NSFontWeight)weight;
-+ (NSButton *)button:(NSString *)title symbol:(NSString *)symbol target:(id)target action:(SEL)action;
++ (NSButton *)button:(NSString *)title
+              symbol:(NSString *)symbol
+              target:(id)target
+              action:(SEL)action;
 + (NSView *)separator;
 @end
 NS_ASSUME_NONNULL_END
