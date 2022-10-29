@@ -37,3 +37,6 @@ $(BUILD)/Sluice.app/Contents/MacOS/Sluice: $(OBJECTS) $(APP_SOURCES) Sources/App
 	@mkdir -p $(@D)
 	$(CC) $(CFLAGS) $(APP_SOURCES) $(OBJECTS) $(LDFLAGS) -framework AppKit -o $@
 	cp Sources/App/Info.plist $(BUILD)/Sluice.app/Contents/Info.plist
+.PHONY: demo
+demo: $(BUILD)/sluice
+	python3 scripts/demo.py
