@@ -1,6 +1,7 @@
 .DEFAULT_GOAL := all
 SHELL := /bin/sh
 CC := xcrun clang
+FUZZ_CC ?= $(shell if command -v brew >/dev/null 2>&1 && brew --prefix llvm >/dev/null 2>&1; then printf '%s/bin/clang' "$$(brew --prefix llvm)"; else xcrun --find clang; fi)
 BUILD ?= build
 SDK := $(shell xcrun --show-sdk-path)
 INCLUDES := $(addprefix -I,$(wildcard Sources/*)) -ITests/Unit
@@ -40,3 +41,16 @@ $(BUILD)/Sluice.app/Contents/MacOS/Sluice: $(OBJECTS) $(APP_SOURCES) Sources/App
 .PHONY: demo
 demo: $(BUILD)/sluice
 	python3 scripts/demo.py
+.PHONY: fuzz
+$(BUILD)/parser-fuzz: $(CORE) Tests/Fuzz/parser_fuzz.m FORCE
+	@mkdir -p $(@D)
+	$(FUZZ_CC) $(CFLAGS) -O1 -fsanitize=fuzzer,address,undefined $(CORE) Tests/Fuzz/parser_fuzz.m $(LDFLAGS) -o $@
+fuzz: $(BUILD)/parser-fuzz
+	@mkdir -p $(BUILD)/fuzz-corpus $(BUILD)/fuzz-artifacts
+	cp Tests/Fuzz/seeds/* $(BUILD)/fuzz-corpus/
+	$(BUILD)/parser-fuzz -seed=41501 -runs=20000 -max_len=4096 -timeout=3 -artifact_prefix=$(BUILD)/fuzz-artifacts/ $(BUILD)/fuzz-corpus
+.PHONY: differential
+$(BUILD)/parser-driver: $(OBJECTS) Tests/Differential/parser_driver.m FORCE
+	$(CC) $(CFLAGS) Tests/Differential/parser_driver.m $(OBJECTS) $(LDFLAGS) -o $@
+differential: $(BUILD)/parser-driver
+	python3 Tests/Differential/test_parser.py
