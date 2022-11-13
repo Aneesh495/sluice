@@ -42,10 +42,24 @@ class Origin(http.server.BaseHTTPRequestHandler):
             body = bytes(range(256))
         self.send_response(200)
         self.send_header("Content-Type", "application/octet-stream" if self.path.startswith("/binary") else "application/json")
-        self.send_header("Content-Length", str(len(body)))
+        if self.path.startswith("/chunked"):
+            self.send_header("Transfer-Encoding", "chunked")
+        else:
+            self.send_header("Content-Length", str(len(body)))
         self.send_header("Set-Cookie", "session=origin-secret")
         self.end_headers()
-        self.wfile.write(body)
+        if self.path.startswith("/chunked"):
+            for at in range(0, len(body), 7):
+                chunk = body[at:at+7]
+                self.wfile.write(f"{len(chunk):x}\r\n".encode() + chunk + b"\r\n")
+            self.wfile.write(b"0\r\n\r\n")
+        else:
+            self.wfile.write(body)
+
+    def do_HEAD(self):
+        self.send_response(200)
+        self.send_header("Content-Length", "123")
+        self.end_headers()
 
     def do_POST(self):
         body = self.rfile.read(int(self.headers.get("Content-Length", "0")))
@@ -96,8 +110,8 @@ def cli(*args, success=True):
     return json.loads(result.stdout) if success else result
 
 
-def request(port, target="/catalog", method="GET", body=None, headers=None):
-    connection = http.client.HTTPConnection("127.0.0.1", port, timeout=5)
+def request(port, target="/catalog", method="GET", body=None, headers=None, timeout=5):
+    connection = http.client.HTTPConnection("127.0.0.1", port, timeout=timeout)
     try:
         connection.request(method, target, body=body, headers=headers or {})
         response = connection.getresponse()
@@ -265,6 +279,74 @@ class WorkbenchTests(unittest.TestCase):
         result = cli("check", "--workspace", self.workspace, success=False)
         self.assertEqual(result.returncode, 2)
         self.assertEqual(json.loads(result.stderr)["error"], "store.corrupt")
+
+    def test_bundle_roundtrip_and_rejected_corruption_are_atomic(self):
+        self.capture()
+        bundle = self.directory / "fixtures.json"
+        cli("export", "--workspace", self.workspace, "--output", bundle)
+        imported = self.directory / "imported"
+        cli("import", "--workspace", imported, "--input", bundle)
+        with Process("replay", imported, "--privacy", PRIVACY) as proxy:
+            self.assertEqual(request(proxy.port)[0], 200)
+        document = json.loads(bundle.read_text())
+        document["sha256"] = "0" * 64
+        bundle.write_text(json.dumps(document))
+        untouched = self.directory / "untouched"
+        result = cli("import", "--workspace", untouched, "--input", bundle, success=False)
+        self.assertEqual(result.returncode, 2)
+        self.assertEqual(cli("check", "--workspace", untouched)["fixtures"], 0)
+
+    def test_committed_capture_survives_sigkill_and_wal_recovery(self):
+        proxy = Process("record", self.workspace, "--upstream", self.upstream, "--privacy", PRIVACY)
+        self.assertEqual(request(proxy.port)[0], 200)
+        proxy.proc.kill()
+        proxy.proc.communicate(timeout=5)
+        self.assertEqual(proxy.proc.returncode, -signal.SIGKILL)
+        self.assertEqual(cli("check", "--workspace", self.workspace)["fixtures"], 1)
+        with Process("replay", self.workspace, "--privacy", PRIVACY) as replay:
+            self.assertEqual(request(replay.port)[0], 200)
+
+    def test_chunked_upstream_and_request_entities_are_normalized(self):
+        self.capture("/chunked")
+        with Process("replay", self.workspace, "--privacy", PRIVACY) as proxy:
+            status, body, headers = request(proxy.port, "/chunked")
+        self.assertEqual(status, 200)
+        self.assertEqual(json.loads(body)["token"], "[redacted]")
+        self.assertNotIn("Transfer-Encoding", headers)
+        wire = (b"POST /echo HTTP/1.1\r\nHost: x\r\nContent-Type: application/json\r\nTransfer-Encoding: chunked\r\n\r\n"
+                b"7\r\n{\"n\":1}\r\n0\r\n\r\n")
+        with Process("record", self.workspace, "--upstream", self.upstream, "--privacy", PRIVACY) as proxy:
+            self.assertTrue(raw_request(proxy.port, wire).startswith(b"HTTP/1.1 201"))
+
+    def test_head_representation_metadata_survives_offline_replay(self):
+        status, body, headers = self.capture("/head", method="HEAD")
+        self.assertEqual((status, body), (200, b""))
+        self.assertEqual(headers["Content-Length"], "123")
+        with Process("replay", self.workspace, "--privacy", PRIVACY) as proxy:
+            status, body, headers = request(proxy.port, "/head", method="HEAD")
+        self.assertEqual((status, body), (200, b""))
+        self.assertEqual(headers["Content-Length"], "123")
+
+    def test_client_write_half_close_still_receives_response(self):
+        self.capture()
+        with Process("replay", self.workspace, "--privacy", PRIVACY) as proxy:
+            with socket.create_connection(("127.0.0.1", proxy.port), timeout=5) as client:
+                client.sendall(b"GET /catalog HTTP/1.1\r\nHost: x\r\n\r\n")
+                client.shutdown(socket.SHUT_WR)
+                chunks = []
+                while chunk := client.recv(65536):
+                    chunks.append(chunk)
+        self.assertTrue(b"".join(chunks).startswith(b"HTTP/1.1 200"))
+
+    def test_delay_longer_than_backpressure_timeout_remains_valid(self):
+        self.capture()
+        scenario = self.scenario({"delayMs": 16000})
+        with Process("replay", self.workspace, "--privacy", PRIVACY, "--scenario", scenario) as proxy:
+            started = time.monotonic()
+            status, _, _ = request(proxy.port, timeout=25)
+            elapsed = time.monotonic() - started
+        self.assertEqual(status, 200)
+        self.assertGreaterEqual(elapsed, 15.9)
 
     def test_cli_misspellings_and_invalid_schema_are_errors(self):
         result = cli("replay", "--workspce", self.workspace, success=False)
