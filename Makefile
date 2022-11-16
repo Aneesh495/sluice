@@ -54,3 +54,6 @@ $(BUILD)/parser-driver: $(OBJECTS) Tests/Differential/parser_driver.m FORCE
 	$(CC) $(CFLAGS) Tests/Differential/parser_driver.m $(OBJECTS) $(LDFLAGS) -o $@
 differential: $(BUILD)/parser-driver
 	python3 Tests/Differential/test_parser.py
+.PHONY: app-smoke
+app-smoke: app
+	python3 Tests/Integration/test_app.py

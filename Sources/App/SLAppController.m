@@ -43,6 +43,8 @@
     BOOL _smoke;
     BOOL _snapshotTaken;
     BOOL _stopRequested;
+    BOOL _exercise;
+    BOOL _exerciseStarted;
     NSString *_snapshotPath;
     NSUInteger _generation;
 }
@@ -63,7 +65,10 @@
             _workspace = args[++i];
         else if ([args[i] isEqual:@"--smoke"])
             _smoke = YES;
-        else if ([args[i] isEqual:@"--snapshot"] && i + 1 < args.count)
+        else if ([args[i] isEqual:@"--exercise"]) {
+            _exercise = YES;
+            _smoke = YES;
+        } else if ([args[i] isEqual:@"--snapshot"] && i + 1 < args.count)
             _snapshotPath = args[++i];
     }
     [NSApp setAppearance:[NSAppearance appearanceNamed:NSAppearanceNameDarkAqua]];
@@ -345,8 +350,23 @@
                                                    (unsigned long)fixtures.count,
                                                    (unsigned long)receipts.count];
                     self->_workspaceLabel.stringValue = path;
+                    if (self->_exercise && !self->_exerciseStarted) {
+                        self->_exerciseStarted = YES;
+                        self->_portField.stringValue = @"0";
+                        [self start:@"replay" fixture:nil];
+                        [self stop:nil];
+                        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 5 * NSEC_PER_SEC),
+                                       dispatch_get_main_queue(), ^{
+                                           if (self->_serving) {
+                                               fprintf(stderr,
+                                                       "app stop during startup timed out\n");
+                                               exit(4);
+                                           }
+                                       });
+                    }
+
                     [self filterRows];
-                    if (self->_smoke && !self->_snapshotTaken) {
+                    if (self->_smoke && !self->_exercise && !self->_snapshotTaken) {
                         self->_snapshotTaken = YES;
                         if (self->_rows.count)
                             [self->_table selectRowIndexes:[NSIndexSet indexSetWithIndex:0]
@@ -645,6 +665,8 @@
                         self->_reactor = nil;
                         [self setServing:NO];
                         self->_status.stringValue = @"Listener stopped. Delivery receipts saved.";
+                        if (self->_exercise)
+                            [self snapshotAndExit];
                         [self refresh:nil];
                         if (self->_terminating)
                             [NSApp replyToApplicationShouldTerminate:YES];
