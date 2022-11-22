@@ -59,3 +59,23 @@ a failing test before the fix.
 - Fix: object compilation checks source, headers, command, and compiler content
   signatures; executable link steps always run. The build helper has a retained
   same-timestamp source mutation test.
+
+## SL-007: a client write half-close discarded a valid response
+
+- Reproducer: `test_client_write_half_close_still_receives_response`.
+- Before: a client that sent a complete request then shut down its write side
+  received no response.
+- Cause: the reactor interpreted POLLHUP as a full connection failure even when
+  the client still had a readable side waiting for the response.
+- Fix: EOF is terminal during incomplete request parsing. After parsing, response
+  writes determine delivery viability. Waiting connections are not polled with
+  an empty interest set, avoiding repeated half-close wakeups.
+
+## SL-008: long planned delays tripped the write-backpressure timeout
+
+- Reproducer: `test_delay_longer_than_backpressure_timeout_remains_valid`.
+- Before: a 16 second intentional delay closed without emitting a response.
+- Cause: the idle-write timer started at plan creation and expired as the first
+  byte became due, before any write was attempted.
+- Fix: the backpressure clock starts no earlier than the current segment's due
+  time. Intentional waiting and failure to make progress are separate states.

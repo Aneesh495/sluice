@@ -305,9 +305,11 @@
                     }
                     if (c.state == SLConnectionClosed)
                         continue;
-                    fds[count] = (struct pollfd){c.clientFD, clientEvents, 0};
-                    owners[count] = c;
-                    count++;
+                    if (clientEvents) {
+                        fds[count] = (struct pollfd){c.clientFD, clientEvents, 0};
+                        owners[count] = c;
+                        count++;
+                    }
                     if (c.originFD >= 0) {
                         short interest = c.state == SLReadingOrigin ? POLLIN : POLLOUT;
                         fds[count] = (struct pollfd){c.originFD, interest, 0};
@@ -339,8 +341,11 @@
                             [self readClient:c];
                         else if (c.state == SLDeliveringResponse && (fds[i].revents & POLLOUT))
                             [self writeClient:c];
+                        if (!origins[i] && c.state == SLReadingRequest &&
+                            (fds[i].revents & POLLHUP) && !(fds[i].revents & POLLIN))
+                            [self readClient:c];
                         if (c.state != SLConnectionClosed && !origins[i] &&
-                            (fds[i].revents & (POLLERR | POLLNVAL | POLLHUP)))
+                            (fds[i].revents & (POLLERR | POLLNVAL)))
                             [self finish:c outcome:@"client-closed"];
                     } @catch (SLError *e) {
                         NSInteger status = [e.code hasPrefix:@"replay."]     ? 409
@@ -366,8 +371,9 @@
                             c.errorCode = @"net.timeout";
                             [self finish:c outcome:@"timeout"];
                         } else if (waitingForPlan && c.plan.segmentCount &&
-                                   now - c.activeUS > 15000000 &&
-                                   now - c.planStartUS >= [c.plan dueUSAt:c.segment]) {
+                                   now >
+                                       MAX(c.activeUS, c.planStartUS + [c.plan dueUSAt:c.segment]) +
+                                           15000000) {
                             c.errorCode = @"net.backpressure";
                             [self finish:c outcome:@"timeout"];
                         }
