@@ -3,6 +3,14 @@
 #import "SLJSON.h"
 #import "SLError.h"
 @implementation SLFixture
+@synthesize request = _request;
+@synthesize response = _response;
+- (SLMessage *)request {
+    return [_request copy];
+}
+- (SLMessage *)response {
+    return [_response copy];
+}
 - (instancetype)initWithDocument:(NSDictionary *)document {
     if ((self = [super init])) {
         document = SLObject(SLJSONRead(SLJSONData(document)), @"fixture");

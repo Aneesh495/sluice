@@ -29,11 +29,11 @@ static void Workspace(void (^body)(SLStore *, NSString *)) {
 }
 void SLTestStorage(void) {
     SLTest(@"fixture message access cannot mutate validated content", ^{
-        SLFixture *fixture=Fixture(@"/original",@"{}");
-        fixture.request.target=@"/mutated";
-        fixture.response.status=500;
-        EQUAL(fixture.request.target,@"/original");
-        CHECK(fixture.response.status==200);
+        SLFixture *fixture = Fixture(@"/original", @"{}");
+        fixture.request.target = @"/mutated";
+        fixture.response.status = 500;
+        EQUAL(fixture.request.target, @"/original");
+        CHECK(fixture.response.status == 200);
     });
     SLTest(@"store deduplicates identical captures and survives reopen", ^{
         Workspace(^(SLStore *store, NSString *path) {
