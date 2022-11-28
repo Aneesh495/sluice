@@ -6,12 +6,26 @@
     NSMutableDictionary<NSString *, NSNumber *> *_occurrences;
     SLReplayIndex *_index;
     NSString *_fixture;
+    SLTape *_tape;
 }
 - (instancetype)initMode:(NSString *)mode
                    store:(SLStore *)store
                  privacy:(SLPrivacy *)privacy
                 scenario:(SLScenario *)scenario
                  fixture:(NSString *)fixture {
+    return [self initMode:mode
+                    store:store
+                  privacy:privacy
+                 scenario:scenario
+                  fixture:fixture
+                     tape:nil];
+}
+- (instancetype)initMode:(NSString *)mode
+                   store:(SLStore *)store
+                 privacy:(SLPrivacy *)privacy
+                scenario:(SLScenario *)scenario
+                 fixture:(NSString *)fixture
+                    tape:(SLTape *)tape {
     if ((self = [super init])) {
         SLRequire([@[ @"record", @"replay" ] containsObject:mode], @"session.mode",
                   @"Session mode must be record or replay");
@@ -21,9 +35,15 @@
         _privacy = privacy;
         _scenario = scenario;
         _fixture = [fixture copy];
+        SLRequire(!(fixture && tape), @"tape.selection",
+                  @"Choose a fixture pin or a tape, not both");
+        _tape = tape;
         _occurrences = [NSMutableDictionary dictionary];
-        if ([mode isEqual:@"replay"])
-            _index = [[SLReplayIndex alloc] initWithFixtures:store.fixtures privacy:privacy];
+        if ([mode isEqual:@"replay"]) {
+            NSArray *fixtures = store.fixtures;
+            [_tape validateFixtures:fixtures];
+            _index = [[SLReplayIndex alloc] initWithFixtures:fixtures privacy:privacy];
+        }
     }
     return self;
 }
@@ -45,7 +65,10 @@
 }
 - (SLMessage *)replay:(SLRequestContext *)context {
     SLRequire(_index != nil, @"session.mode", @"Session is not in replay mode");
-    SLFixture *fixture = [_index select:context.identity identifier:_fixture];
+    NSString *identifier = _tape ? [_tape fixtureForIdentity:context.identity
+                                                  occurrence:context.occurrence]
+                                 : _fixture;
+    SLFixture *fixture = [_index select:context.identity identifier:identifier];
     context.fixture = fixture.identifier;
     return [fixture.response copy];
 }

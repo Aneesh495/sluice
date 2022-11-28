@@ -8,6 +8,7 @@
 #import "SLHAR.h"
 #import "SLDiff.h"
 #import "SLReport.h"
+#import "SLTape.h"
 #import <dispatch/dispatch.h>
 #import <signal.h>
 #import <sqlite3.h>
@@ -33,6 +34,7 @@ static void Help(void) {
          "har      --workspace DIR --input FILE [--privacy FILE]\n"
          "diff     --workspace DIR --before UUID --after UUID\n"
          "report   --workspace DIR [--session UUID]\n"
+         "tape     --workspace DIR --session UUID --output FILE [--repeat-last]\n"
          "doctor\n\n"
          "record and replay bind only 127.0.0.1. Use port 0 for an ephemeral port.\n"
          "Recording omits bodies by default. Opt into sanitized JSON with a privacy file.\n"
@@ -52,7 +54,8 @@ int main(int argc, const char **argv) {
             [raw removeObjectAtIndex:0];
             NSDictionary *schemas = @{
                 @"record" : @[ @"workspace", @"upstream", @"port", @"privacy", @"scenario" ],
-                @"replay" : @[ @"workspace", @"port", @"privacy", @"scenario", @"fixture" ],
+                @"replay" :
+                    @[ @"workspace", @"port", @"privacy", @"scenario", @"fixture", @"tape" ],
                 @"fixtures" : @[ @"workspace", @"id" ],
                 @"receipts" : @[ @"workspace", @"limit" ],
                 @"plan" : @[ @"workspace", @"fixture", @"scenario", @"occurrence" ],
@@ -63,13 +66,16 @@ int main(int argc, const char **argv) {
                 @"import" : @[ @"workspace", @"input" ],
                 @"har" : @[ @"workspace", @"input", @"privacy" ],
                 @"diff" : @[ @"workspace", @"before", @"after" ],
-                @"report" : @[ @"workspace", @"session" ]
+                @"report" : @[ @"workspace", @"session" ],
+                @"tape" : @[ @"workspace", @"session", @"output" ]
             };
             SLRequire(schemas[command] != nil, @"cli.command",
                       @"Unknown command; run sluice --help");
-            SLArguments *a = [[SLArguments alloc] initWithArguments:raw
-                                                             values:schemas[command]
-                                                              flags:@[ @"help" ]];
+            SLArguments *a = [[SLArguments alloc]
+                initWithArguments:raw
+                           values:schemas[command]
+                            flags:[command isEqual:@"tape"] ? @[ @"help", @"repeat-last" ]
+                                                            : @[ @"help" ]];
             if ([a has:@"help"]) {
                 Help();
                 return 0;
@@ -107,7 +113,16 @@ int main(int argc, const char **argv) {
                 return 0;
             }
             SLStore *store = [[SLStore alloc] initWithDirectory:[a required:@"workspace"]];
-            if ([command isEqual:@"export"]) {
+            if ([command isEqual:@"tape"]) {
+                SLTape *tape = [SLTape fromReceipts:[store receipts:100000]
+                                            session:[a required:@"session"]
+                                         repeatLast:[a has:@"repeat-last"]];
+                [tape validateFixtures:store.fixtures];
+                SLAtomicWrite(SLJSONData(tape.document), [a required:@"output"]);
+                Print(
+                    @{@"sha256" : tape.digest,
+                      @"streams" : @([tape.document[@"streams"] count])});
+            } else if ([command isEqual:@"export"]) {
                 NSArray *fixtures = store.fixtures;
                 if ([a has:@"fixture"]) {
                     SLFixture *f = [store fixture:[a required:@"fixture"]];
@@ -203,11 +218,15 @@ int main(int argc, const char **argv) {
                     [a has:@"scenario"]
                         ? [[SLScenario alloc] initWithDocument:Document([a required:@"scenario"])]
                         : SLScenario.passthrough;
-                SLSession *session = [[SLSession alloc] initMode:command
-                                                           store:store
-                                                         privacy:privacy
-                                                        scenario:scenario
-                                                         fixture:[a value:@"fixture"]];
+                SLSession *session = [[SLSession alloc]
+                    initMode:command
+                       store:store
+                     privacy:privacy
+                    scenario:scenario
+                     fixture:[a value:@"fixture"]
+                        tape:[a has:@"tape"]
+                                 ? [[SLTape alloc] initWithDocument:Document([a required:@"tape"])]
+                                 : nil];
                 SLEndpoint *endpoint =
                     [command isEqual:@"record"] ? [SLEndpoint parse:[a required:@"upstream"]] : nil;
                 SLReactor *reactor = [[SLReactor alloc] initSession:session

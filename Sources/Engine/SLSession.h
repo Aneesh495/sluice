@@ -1,6 +1,7 @@
 #import "SLStore.h"
 #import "SLDeliveryPlan.h"
 #import "SLReplayIndex.h"
+#import "SLTape.h"
 NS_ASSUME_NONNULL_BEGIN
 @interface SLRequestContext : NSObject
 @property(nonatomic) NSString *identity;
@@ -22,6 +23,12 @@ NS_ASSUME_NONNULL_BEGIN
                  privacy:(SLPrivacy *)privacy
                 scenario:(SLScenario *)scenario
                  fixture:(nullable NSString *)fixture;
+- (instancetype)initMode:(NSString *)mode
+                   store:(SLStore *)store
+                 privacy:(SLPrivacy *)privacy
+                scenario:(SLScenario *)scenario
+                 fixture:(nullable NSString *)fixture
+                    tape:(nullable SLTape *)tape;
 - (SLRequestContext *)begin:(SLMessage *)request;
 - (SLMessage *)replay:(SLRequestContext *)context;
 - (SLDeliveryPlan *)complete:(SLRequestContext *)context

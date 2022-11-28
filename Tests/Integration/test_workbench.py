@@ -348,6 +348,20 @@ class WorkbenchTests(unittest.TestCase):
         self.assertEqual(status, 200)
         self.assertGreaterEqual(elapsed, 15.9)
 
+    def test_recorded_state_sequence_replays_without_variant_ambiguity(self):
+        with Process("record", self.workspace, "--upstream", self.upstream, "--privacy", PRIVACY) as proxy:
+            session = proxy.ready["session"]
+            before = json.loads(request(proxy.port, "/changing")[1])
+            after = json.loads(request(proxy.port, "/changing")[1])
+        tape = self.directory / "sequence.json"
+        cli("tape", "--workspace", self.workspace, "--session", session, "--output", tape)
+        with Process("replay", self.workspace, "--privacy", PRIVACY, "--tape", tape) as replay:
+            self.assertEqual(json.loads(request(replay.port, "/changing")[1]), before)
+            self.assertEqual(json.loads(request(replay.port, "/changing")[1]), after)
+            status, body, _ = request(replay.port, "/changing")
+            self.assertEqual(status, 409)
+            self.assertEqual(json.loads(body)["error"], "tape.exhausted")
+
     def test_cli_misspellings_and_invalid_schema_are_errors(self):
         result = cli("replay", "--workspce", self.workspace, success=False)
         self.assertEqual(result.returncode, 2)

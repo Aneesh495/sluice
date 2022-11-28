@@ -348,9 +348,10 @@
                             (fds[i].revents & (POLLERR | POLLNVAL)))
                             [self finish:c outcome:@"client-closed"];
                     } @catch (SLError *e) {
-                        NSInteger status = [e.code hasPrefix:@"replay."]     ? 409
-                                           : (origins[i] || c.originFD >= 0) ? 502
-                                                                             : 400;
+                        NSInteger status =
+                            ([e.code hasPrefix:@"replay."] || [e.code hasPrefix:@"tape."]) ? 409
+                            : (origins[i] || c.originFD >= 0)                              ? 502
+                                                                                           : 400;
                         @try {
                             [self failure:c
                                      code:e.code
