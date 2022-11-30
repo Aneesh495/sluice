@@ -25,13 +25,10 @@ privacy, persistence, scheduling, networking, analysis, CLI, and desktop UI.
 
 ## Why this direction
 
-The portfolio inspection covered public READMEs and recursive source inventories,
-with source samples from the closest networking, simulation, storage, and product
-repositories. Existing work covers messaging (vibe), bounded simulation
-(crucible), archives (cairn), signal experiments (quartz), storage (tessera),
-document analysis (covenant), and developer runtimes (conduit). Sluice combines a
-native desktop workflow with real client traffic and dependency replacement.
-It does not reuse their implementations.
+Dependency failures are difficult to reproduce because response state, retry
+order, and wire delivery change together. Sluice separates those inputs. A
+filtered recording fixes the baseline, an explicit tape fixes changing state,
+and a scenario changes response behavior and relative byte timing.
 
 HTTP interception and network impairment already have mature implementations.
 Sluice's specific design is a small, inspectable failure rehearsal workflow:
