@@ -9,13 +9,16 @@ static SLHTTPParser *Parse(NSString *wire, BOOL request) {
 }
 void SLTestParser(void) {
     SLTest(@"chunk overhead does not make validity depend on feed fragment size", ^{
-        NSMutableData *wire=[SLUTF8(@"HTTP/1.1 200 OK\r\nTransfer-Encoding: chunked\r\n\r\n") mutableCopy];
-        NSData *chunk=SLUTF8(@"1\r\nx\r\n");
-        for (NSUInteger i=0;i<1500000;i++) [wire appendData:chunk];
+        NSMutableData *wire =
+            [SLUTF8(@"HTTP/1.1 200 OK\r\nTransfer-Encoding: chunked\r\n\r\n") mutableCopy];
+        NSData *chunk = SLUTF8(@"1\r\nx\r\n");
+        for (NSUInteger i = 0; i < 1500000; i++)
+            [wire appendData:chunk];
         [wire appendData:SLUTF8(@"0\r\n\r\n")];
-        SLHTTPParser *parser=[[SLHTTPParser alloc] initRequest:NO responseToHEAD:NO];
-        [parser feed:wire]; [parser endOfFile];
-        CHECK(parser.message.body.length==1500000);
+        SLHTTPParser *parser = [[SLHTTPParser alloc] initRequest:NO responseToHEAD:NO];
+        [parser feed:wire];
+        [parser endOfFile];
+        CHECK(parser.message.body.length == 1500000);
     });
     SLTest(@"request parser is invariant under every two-way split", ^{
         NSData *d = SLUTF8(@"POST /v1/items?q=a%20b HTTP/1.1\r\nHost: local\r\nContent-Length: "

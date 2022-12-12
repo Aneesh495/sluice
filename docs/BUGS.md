@@ -79,3 +79,22 @@ a failing test before the fix.
   byte became due, before any write was attempted.
 - Fix: the backpressure clock starts no earlier than the current segment's due
   time. Intentional waiting and failure to make progress are separate states.
+
+## SL-009: fixture message projections could be mutated after validation
+
+- Reproducer: `fixture message access cannot mutate validated content`.
+- Before: a caller could change the target or status on a fixture's message
+  projection while its immutable document and content digest stayed unchanged.
+- Cause: read-only properties exposed a mutable cached message instance.
+- Fix: return message copies. Immutable body bytes and header values remain
+  shared; mutable metadata stays private to the projection's caller.
+
+## SL-010: chunk overhead made validity depend on feed size
+
+- Reproducer: `chunk overhead does not make validity depend on feed fragment size`.
+- Before: a valid 1.5 MiB entity encoded as one-byte chunks was accepted from
+  normal socket reads but rejected when passed to the parser as one NSData.
+- Cause: the initial pending-buffer check counted all encoded chunk overhead
+  against the entity budget before the head and chunks could be consumed.
+- Fix: normalize public feed calls to the same bounded read units as the reactor.
+  The decoded entity budget remains unchanged and input framing is invariant.

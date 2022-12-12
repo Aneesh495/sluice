@@ -29,6 +29,16 @@
     _complete = YES;
 }
 - (void)feed:(NSData *)data {
+    // Normalize API input to the same read-sized units used by the reactor.
+    // Encoded chunk overhead can exceed the entity budget without increasing
+    // decoded body size. Validity must not depend on the caller's feed stride.
+    if (data.length > 16384) {
+        for (NSUInteger at = 0; at < data.length; at += 16384)
+            [self feed:[data subdataWithRange:NSMakeRange(
+                                                  at, MIN((NSUInteger)16384, data.length - at))]];
+        return;
+    }
+
     SLRequire(!_complete || !data.length, @"http.trailing", @"Bytes follow completed message");
     if (_complete)
         return;
