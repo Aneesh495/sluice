@@ -103,7 +103,7 @@ def main():
         raise RuntimeError("Offline outage rehearsal did not match its contract")
     report = subprocess.check_output([str(BINARY), "report", "--workspace", str(workspace)], text=True)
     print(json.dumps({"workspace": str(workspace), "originStoppedBeforeReplay": True, "observedStatus": [first, second], "firstResponse": unavailable, "recoveredItems": len(available["items"]), "report": json.loads(report)}, indent=2))
-    print(f'\nInspect it: build/Sluice.app/Contents/MacOS/Sluice --workspace "{workspace}"')
+    print(f'\nInspect it: build/Sluice.app/Contents/MacOS/Sluice --workspace "{workspace}" --privacy examples/privacy.json --scenario examples/outage.json')
 
 
 if __name__ == "__main__":

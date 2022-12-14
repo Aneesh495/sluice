@@ -57,6 +57,7 @@
     _dataQueue = dispatch_queue_create("dev.sluice.workspace", DISPATCH_QUEUE_SERIAL);
     _networkQueue = dispatch_queue_create("dev.sluice.network", DISPATCH_QUEUE_SERIAL);
     NSArray *args = NSProcessInfo.processInfo.arguments;
+    NSString *initialPrivacy = nil, *initialScenario = nil;
     _workspace =
         [NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES)
                 .firstObject stringByAppendingPathComponent:@"Sluice"];
@@ -68,12 +69,33 @@
         else if ([args[i] isEqual:@"--exercise"]) {
             _exercise = YES;
             _smoke = YES;
-        } else if ([args[i] isEqual:@"--snapshot"] && i + 1 < args.count)
+        } else if ([args[i] isEqual:@"--privacy"] && i + 1 < args.count)
+            initialPrivacy = args[++i];
+        else if ([args[i] isEqual:@"--scenario"] && i + 1 < args.count)
+            initialScenario = args[++i];
+        else if ([args[i] isEqual:@"--snapshot"] && i + 1 < args.count)
             _snapshotPath = args[++i];
     }
     [NSApp setAppearance:[NSAppearance appearanceNamed:NSAppearanceNameDarkAqua]];
     [self menu];
     [self buildWindow];
+    @try {
+        if (initialPrivacy) {
+            _privacy = [[SLPrivacy alloc]
+                initWithDocument:SLJSONRead(SLReadFile(initialPrivacy, 1024 * 1024))];
+            _policyLabel.stringValue =
+                [NSString stringWithFormat:@"Privacy: %@ bodies · %@", _privacy.bodyMode,
+                                           [_privacy.digest substringToIndex:8]];
+        }
+        if (initialScenario) {
+            _scenario = [[SLScenario alloc]
+                initWithDocument:SLJSONRead(SLReadFile(initialScenario, 1024 * 1024))];
+            _scenarioLabel.stringValue = [@"Scenario: " stringByAppendingString:_scenario.name];
+        }
+    } @catch (SLError *error) {
+        [self error:error];
+    }
+
     if (_smoke)
         [_window orderBack:nil];
     else {
