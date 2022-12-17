@@ -12,10 +12,6 @@
 void SLFail(NSString *code, NSString *message) {
     @throw [SLError code:code message:message];
 }
-void SLRequire(BOOL condition, NSString *code, NSString *message) {
-    if (!condition)
-        SLFail(code, message);
-}
 BOOL SLIsInteger(id value) {
     if (![value isKindOfClass:NSNumber.class] ||
         CFGetTypeID((__bridge CFTypeRef)value) == CFBooleanGetTypeID())

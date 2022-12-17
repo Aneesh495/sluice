@@ -19,10 +19,10 @@
     if ((self = [super init])) {
         SLAction *action = rule ? rule.action : [[SLAction alloc] initWithDocument:@{}];
         _response = [action apply:response];
-        uint64_t jitter = action.jitterMS ? SLDraw(scenario.seed, rule.identifier, identity,
-                                                   occurrence, @"jitter") %
-                                                (action.jitterMS + 1)
-                                          : 0;
+        uint64_t jitter = rule && action.jitterMS ? SLDraw(scenario.seed, rule.identifier, identity,
+                                                           occurrence, @"jitter") %
+                                                        (action.jitterMS + 1)
+                                                  : 0;
         _delayUS = (action.delayMS + jitter) * 1000;
         BOOL noBody =
             [request.method isEqual:@"HEAD"] || _response.status == 204 || _response.status == 304;

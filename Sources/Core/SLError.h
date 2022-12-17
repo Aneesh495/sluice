@@ -8,7 +8,12 @@ NS_ASSUME_NONNULL_BEGIN
 + (instancetype)code:(NSString *)code message:(NSString *)message;
 @end
 FOUNDATION_EXPORT void SLFail(NSString *code, NSString *message) __attribute__((noreturn));
-FOUNDATION_EXPORT void SLRequire(BOOL condition, NSString *code, NSString *message);
+// Keeping the guard body visible lets Clang prove the success-path invariant.
+// SLFail is noreturn, so a failed condition cannot leak into a nonnull caller.
+NS_INLINE void SLRequire(BOOL condition, NSString *code, NSString *message) {
+    if (!condition)
+        SLFail(code, message);
+}
 FOUNDATION_EXPORT BOOL SLIsInteger(id _Nullable value);
 FOUNDATION_EXPORT int64_t SLInteger(id value, int64_t minimum, int64_t maximum, NSString *field);
 FOUNDATION_EXPORT NSString *SLString(id value, NSUInteger maximum, NSString *field);

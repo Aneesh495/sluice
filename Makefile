@@ -1,6 +1,7 @@
 .DEFAULT_GOAL := all
 SHELL := /bin/sh
 CC := xcrun clang
+FUZZ_RUNS ?= 100000
 FUZZ_CC ?= $(shell if command -v brew >/dev/null 2>&1 && brew --prefix llvm >/dev/null 2>&1; then printf '%s/bin/clang' "$$(brew --prefix llvm)"; else xcrun --find clang; fi)
 BUILD ?= build
 SDK := $(shell xcrun --show-sdk-path)
@@ -48,7 +49,7 @@ $(BUILD)/parser-fuzz: $(CORE) Tests/Fuzz/parser_fuzz.m FORCE
 fuzz: $(BUILD)/parser-fuzz
 	@mkdir -p $(BUILD)/fuzz-corpus $(BUILD)/fuzz-artifacts
 	cp Tests/Fuzz/seeds/* $(BUILD)/fuzz-corpus/
-	$(BUILD)/parser-fuzz -seed=41501 -runs=20000 -max_len=4096 -timeout=3 -artifact_prefix=$(BUILD)/fuzz-artifacts/ $(BUILD)/fuzz-corpus
+	$(BUILD)/parser-fuzz -seed=41501 -runs=$(FUZZ_RUNS) -max_len=4096 -timeout=3 -artifact_prefix=$(BUILD)/fuzz-artifacts/ $(BUILD)/fuzz-corpus
 .PHONY: differential
 $(BUILD)/parser-driver: $(OBJECTS) Tests/Differential/parser_driver.m FORCE
 	$(CC) $(CFLAGS) Tests/Differential/parser_driver.m $(OBJECTS) $(LDFLAGS) -o $@
@@ -57,3 +58,12 @@ differential: $(BUILD)/parser-driver
 .PHONY: app-smoke
 app-smoke: app
 	python3 Tests/Integration/test_app.py
+.PHONY: analyze
+analyze:
+	python3 scripts/analyze.py
+
+.PHONY: acceptance verify
+acceptance:
+	python3 scripts/acceptance.py
+verify:
+	python3 scripts/verify_evidence.py verification/2026-10-18/report.json
