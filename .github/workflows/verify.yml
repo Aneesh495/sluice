@@ -1,0 +1,32 @@
+name: verify
+on:
+  push:
+  pull_request:
+permissions:
+  contents: read
+concurrency:
+  group: verify-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  native:
+    strategy:
+      fail-fast: false
+      matrix:
+        runner: [macos-15-intel, macos-26]
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Build native application and exercise core behavior
+        run: make all app test integration differential analyze
+      - name: Check content-addressed build behavior
+        run: python3 Tests/Integration/test_build.py
+      - name: Address and undefined behavior sanitizers
+        run: make BUILD=build/sanitize EXTRA_FLAGS='-fsanitize=address,undefined -fno-omit-frame-pointer -O1' test all integration
+      - name: Preserve test and analysis outputs
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: native-${{ matrix.runner }}
+          path: build/analyze
+          if-no-files-found: warn
