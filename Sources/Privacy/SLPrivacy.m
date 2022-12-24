@@ -61,8 +61,8 @@ static NSSet *Names(NSArray *defaults, id configured, NSString *field) {
             equals.location == NSNotFound ? part : [part substringToIndex:equals.location];
         NSString *decoded = [[key stringByReplacingOccurrencesOfString:@"+" withString:@" "]
             stringByRemovingPercentEncoding];
-        SLRequire(decoded != nil, @"privacy.query",
-                  @"Query parameter name has invalid UTF-8 escapes");
+        if (!decoded)
+            SLFail(@"privacy.query", @"Query parameter name has invalid UTF-8 escapes");
         [parts addObject:[_query containsObject:decoded.lowercaseString]
                              ? [key stringByAppendingString:@"=%5Bredacted%5D"]
                              : part];

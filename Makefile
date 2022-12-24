@@ -67,3 +67,6 @@ acceptance:
 	python3 scripts/acceptance.py
 verify:
 	python3 scripts/verify_evidence.py verification/2026-10-18/report.json
+.PHONY: coverage
+coverage:
+	python3 scripts/coverage.py

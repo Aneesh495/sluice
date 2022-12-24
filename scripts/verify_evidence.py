@@ -7,7 +7,7 @@ from pathlib import Path
 import sys
 
 ROOT = Path(__file__).resolve().parents[1]
-REQUIRED = {"native", "integration", "differential", "build-cache", "app", "analyzer", "sanitizers", "fuzz"}
+REQUIRED = {"native", "integration", "differential", "build-cache", "app", "analyzer", "sanitizers", "fuzz", "coverage"}
 
 
 def sha(path):

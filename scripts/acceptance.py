@@ -40,6 +40,7 @@ def main():
         ("build-cache", ["python3", "Tests/Integration/test_build.py"]),
         ("app", ["make", "app-smoke"]),
         ("analyzer", ["make", "analyze"]),
+        ("coverage", ["make", "coverage"]),
         ("sanitizers", ["make", "BUILD=build/sanitize", "EXTRA_FLAGS=-fsanitize=address,undefined -fno-omit-frame-pointer -O1", "test", "all", "integration"]),
         ("fuzz", ["make", "fuzz", f"FUZZ_RUNS={args.fuzz_runs}"]),
     ]
