@@ -13,7 +13,7 @@ includes = ["-I" + str(path) for path in sorted((ROOT / "Sources").iterdir()) if
 failed = []
 for source in sorted((ROOT / "Sources").rglob("*.m")):
     destination = OUTPUT / (str(source.relative_to(ROOT)).replace("/", "_") + ".plist")
-    command = ["xcrun", "clang", "--analyze", "-Xanalyzer", "-analyzer-output=plist", "-fobjc-arc", "-fblocks", "-std=gnu11", "-Wall", "-Wextra", "-Wno-unused-parameter", "-isysroot", sdk, "-mmacosx-version-min=13.0", *includes, str(source), "-o", str(destination)]
+    command = ["xcrun", "clang", "--analyze", "-Xanalyzer", "-analyzer-output=plist", "-fobjc-arc", "-fobjc-arc-exceptions", "-fblocks", "-std=gnu11", "-Wall", "-Wextra", "-Wno-unused-parameter", "-isysroot", sdk, "-mmacosx-version-min=13.0", *includes, str(source), "-o", str(destination)]
     result = subprocess.run(command, cwd=ROOT)
     diagnostics = plistlib.loads(destination.read_bytes()).get("diagnostics", []) if destination.exists() else []
     if result.returncode or diagnostics:

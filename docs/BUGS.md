@@ -98,3 +98,17 @@ a failing test before the fix.
   against the entity budget before the head and chunks could be consumed.
 - Fix: normalize public feed calls to the same bounded read units as the reactor.
   The decoded entity budget remains unchanged and input framing is invariant.
+
+## SL-011: recovered input exceptions leaked strong local objects
+
+- Reproducer: `recovered rejection releases strong locals during stack unwinding`.
+- Before: a precise-lifetime probe was never deallocated after its scope threw.
+  The extended fuzz run also showed continuing resident-memory growth under
+  repeated rejected inputs. That campaign was stopped and retained separately.
+- Cause: Objective-C ARC does not release strong locals during exception unwinding
+  by default. Sluice deliberately recovers from validation exceptions at request
+  and command boundaries, so that default was inappropriate.
+- Fix: enable `-fobjc-arc-exceptions` in every production, test, sanitizer, fuzz,
+  coverage, and static-analysis compilation. The native deallocation regression
+  fails immediately if the flag is removed.
+- Reference: [Clang ARC exception semantics](https://clang.llvm.org/docs/AutomaticReferenceCounting.html#exceptions).

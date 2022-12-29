@@ -11,7 +11,7 @@ inspect exactly what the socket accepted.
 
 ## Run it
 
-macOS with Apple Command Line Tools and Python 3. No package manager, external
+macOS with Apple Command Line Tools and Python 3.9 or newer. No package manager, external
 service, root helper, certificate installation, or Xcode project is required for
 the normal build.
 

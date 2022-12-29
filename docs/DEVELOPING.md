@@ -2,7 +2,7 @@
 
 ## Toolchain
 
-The normal build needs macOS, Apple Command Line Tools, and Python 3. Install the
+The normal build needs macOS, Apple Command Line Tools, and Python 3.9 or newer. Install the
 Command Line Tools with `xcode-select --install` if `xcrun clang` is unavailable.
 There is no generated Xcode project or dependency installation step. Foundation,
 AppKit, CommonCrypto, BSD sockets, and SQLite are supplied by macOS.
@@ -140,3 +140,12 @@ The verifier requires the exact gate set, successful exit status, matching raw-l
 hashes, and an exact current source manifest. It fails on missing or stale files.
 This is reproducibility bookkeeping, not a signature or an independent proof of
 correctness. Read the tests and the raw observations behind the result.
+
+## Recoverable exceptions and ARC
+
+Sluice enables `-fobjc-arc-exceptions` explicitly. Validation failures recover at
+well-defined adapter and connection boundaries; they are not process-terminal
+programmer failures. Ordinary Objective-C ARC omits strong-local releases during
+exception unwinding unless this option is enabled. A precise-lifetime probe in
+the native suite checks deallocation after a recovered throw. Keep the flag when
+adding build configurations.

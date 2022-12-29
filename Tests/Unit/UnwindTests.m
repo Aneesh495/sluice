@@ -6,7 +6,9 @@ static NSUInteger destroyedProbes;
 @interface SLUnwindProbe : NSObject
 @end
 @implementation SLUnwindProbe
-- (void)dealloc { destroyedProbes++; }
+- (void)dealloc {
+    destroyedProbes++;
+}
 @end
 static void RejectWithOwnedLocal(void) {
     SLUnwindProbe *probe __attribute__((objc_precise_lifetime)) = [SLUnwindProbe new];
@@ -15,10 +17,12 @@ static void RejectWithOwnedLocal(void) {
 }
 void SLTestUnwind(void) {
     SLTest(@"recovered rejection releases strong locals during stack unwinding", ^{
-        NSUInteger before=destroyedProbes;
+        NSUInteger before = destroyedProbes;
         @autoreleasepool {
-            SLThrows(@"test.expected-rejection", ^{ RejectWithOwnedLocal(); });
+            SLThrows(@"test.expected-rejection", ^{
+                RejectWithOwnedLocal();
+            });
         }
-        CHECK(destroyedProbes==before+1);
+        CHECK(destroyedProbes == before + 1);
     });
 }
