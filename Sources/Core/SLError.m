@@ -12,6 +12,10 @@
 void SLFail(NSString *code, NSString *message) {
     @throw [SLError code:code message:message];
 }
+BOOL SLIsBoolean(id value) {
+    return [value isKindOfClass:NSNumber.class] &&
+           CFGetTypeID((__bridge CFTypeRef)value) == CFBooleanGetTypeID();
+}
 BOOL SLIsInteger(id value) {
     if (![value isKindOfClass:NSNumber.class] ||
         CFGetTypeID((__bridge CFTypeRef)value) == CFBooleanGetTypeID())

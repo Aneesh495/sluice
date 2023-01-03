@@ -1,5 +1,7 @@
 #import "SLArguments.h"
 #import "SLError.h"
+#import <errno.h>
+#import <stdlib.h>
 @implementation SLArguments
 - (instancetype)initWithArguments:(NSArray *)arguments
                            values:(NSArray *)values
@@ -57,15 +59,21 @@
     NSString *s = self.options[name];
     if (!s)
         return fallback;
-    NSScanner *scanner = [NSScanner scannerWithString:s];
-    scanner.charactersToBeSkipped = nil;
-    long long n = 0;
-    SLRequire([scanner scanLongLong:&n] && scanner.isAtEnd && ![s hasPrefix:@"+"] &&
+    // NSScanner saturates on overflow. Preserve an out-of-range spelling as
+    // an error rather than silently turning it into INT64_MAX or INT64_MIN.
+    const char *text = s.UTF8String;
+    SLRequire(text != NULL, @"cli.integer", @"Integer spelling cannot be encoded as UTF-8");
+    char *end = NULL;
+    errno = 0;
+    long long n = strtoll(text, &end, 10);
+    int parseError = errno;
+    SLRequire(end != text && end && *end == 0 && parseError != ERANGE && ![s hasPrefix:@"+"] &&
                   [s rangeOfCharacterFromSet:[NSCharacterSet
                                                  characterSetWithCharactersInString:@"-0123456789"]
                                                  .invertedSet]
                           .location == NSNotFound,
-              @"cli.integer", [name stringByAppendingString:@" must be a decimal integer"]);
+              @"cli.integer",
+              [name stringByAppendingString:@" must be an in-range decimal integer"]);
     return SLInteger(@(n), minimum, maximum, name);
 }
 @end

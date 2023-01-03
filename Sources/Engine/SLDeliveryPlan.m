@@ -70,8 +70,9 @@
             @"chunkBytes" : @(_chunkBytes),
             @"bytesPerSecond" : @(_rate),
             @"disconnect" : @(action.disconnect),
-            @"truncated" : @(!noBody && body.length < _response.body.length)
+            @"truncated" : @((BOOL)(!noBody && body.length < _response.body.length))
         };
+        SLValidatePlanSummary(_summary);
     }
     return self;
 }
@@ -88,3 +89,54 @@
     return self.delayUS + (_rate ? (offset * 1000000 + _rate - 1) / _rate : 0);
 }
 @end
+
+static void DigestField(NSDictionary *summary, NSString *key) {
+    NSString *digest = SLString(summary[key], 64, key);
+    SLRequire(
+        digest.length == 64 &&
+            [digest
+                rangeOfCharacterFromSet:[NSCharacterSet
+                                            characterSetWithCharactersInString:@"0123456789abcdef"]
+                                            .invertedSet]
+                    .location == NSNotFound,
+        @"plan.digest", @"Invalid plan content digest");
+}
+void SLValidatePlanSummary(NSDictionary *summary) {
+    SLObject(summary, @"plan");
+    NSArray *fields = @[
+        @"version", @"identity", @"occurrence", @"scenario", @"rule", @"status", @"delayUs",
+        @"durationUs", @"advertisedBodyBytes", @"deliveredBodyBytes", @"wireBytes", @"wireSHA256",
+        @"segments", @"chunkBytes", @"bytesPerSecond", @"disconnect", @"truncated"
+    ];
+    SLKeys(summary, fields, fields, @"plan");
+    SLInteger(summary[@"version"], 1, 1, @"plan.version");
+    SLString(summary[@"identity"], 64, @"plan.identity");
+    SLString(summary[@"rule"], 128, @"plan.rule");
+    SLInteger(summary[@"occurrence"], 1, INT64_MAX, @"plan.occurrence");
+    SLInteger(summary[@"status"], 200, 599, @"plan.status");
+    int64_t delay = SLInteger(summary[@"delayUs"], 0, 120000000, @"plan.delayUs");
+    int64_t duration = SLInteger(summary[@"durationUs"], 0, 120000000, @"plan.durationUs");
+    int64_t advertised =
+        SLInteger(summary[@"advertisedBodyBytes"], 0, 8 * 1024 * 1024, @"plan.advertisedBodyBytes");
+    int64_t delivered =
+        SLInteger(summary[@"deliveredBodyBytes"], 0, 8 * 1024 * 1024, @"plan.deliveredBodyBytes");
+    int64_t wire = SLInteger(summary[@"wireBytes"], 0, 9 * 1024 * 1024, @"plan.wireBytes");
+    int64_t segments = SLInteger(summary[@"segments"], 0, 8 * 1024 * 1024 + 1, @"plan.segments");
+    int64_t chunk = SLInteger(summary[@"chunkBytes"], 1, 1048576, @"plan.chunkBytes");
+    SLInteger(summary[@"bytesPerSecond"], 0, 1000000000, @"plan.bytesPerSecond");
+    SLRequire(SLIsBoolean(summary[@"disconnect"]) && SLIsBoolean(summary[@"truncated"]),
+              @"schema.type", @"Plan truth values must be booleans");
+    DigestField(summary, @"scenario");
+    DigestField(summary, @"wireSHA256");
+    SLRequire(duration >= delay && delivered <= advertised && wire >= delivered, @"plan.accounting",
+              @"Plan timing or byte counts disagree");
+    if ([summary[@"disconnect"] boolValue])
+        SLRequire(wire == 0 && segments == 0 && delivered == 0, @"plan.accounting",
+                  @"Disconnect plan must transmit no bytes");
+    else
+        SLRequire(wire > 0 && segments == 1 + (delivered + chunk - 1) / chunk, @"plan.accounting",
+                  @"Plan segment count disagrees with its entity and chunk size");
+    if ([summary[@"truncated"] boolValue])
+        SLRequire(delivered < advertised, @"plan.accounting",
+                  @"Truncated plan must send fewer entity bytes than advertised");
+}

@@ -50,7 +50,8 @@ Parameters such as charset do not change recognition. Input must pass the strict
 JSON reader. The filter descends through objects and arrays and replaces values
 at configured keys. It then stores canonical sorted-key JSON bytes.
 
-Malformed JSON, unsupported media types, and compressed bodies stay omitted.
+Malformed JSON, unsupported media types, compressed bodies, and canonical JSON
+that expands beyond the 8 MiB body budget stay omitted.
 The engine does not guess that an arbitrary text or binary body is safe. HAR
 content is decoded according to the archive representation before it enters the
 same filter.

@@ -149,3 +149,16 @@ programmer failures. Ordinary Objective-C ARC omits strong-local releases during
 exception unwinding unless this option is enabled. A precise-lifetime probe in
 the native suite checks deallocation after a recovered throw. Keep the flag when
 adding build configurations.
+
+A new campaign writes `build/acceptance/report.json`. Verify that result directly
+before replacing the published snapshot:
+
+```sh
+python3 scripts/verify_evidence.py build/acceptance/report.json
+python3 Tests/Integration/test_evidence.py build/acceptance/report.json
+```
+
+`make verify` deliberately checks the committed snapshot. After a source change,
+that older snapshot remains stale until a reviewed report and its exact logs are
+copied into the verification directory and committed. Documentation-only changes
+outside the source manifest do not invalidate runtime evidence.

@@ -14,6 +14,7 @@ NS_INLINE void SLRequire(BOOL condition, NSString *code, NSString *message) {
     if (!condition)
         SLFail(code, message);
 }
+FOUNDATION_EXPORT BOOL SLIsBoolean(id _Nullable value);
 FOUNDATION_EXPORT BOOL SLIsInteger(id _Nullable value);
 FOUNDATION_EXPORT int64_t SLInteger(id value, int64_t minimum, int64_t maximum, NSString *field);
 FOUNDATION_EXPORT NSString *SLString(id value, NSUInteger maximum, NSString *field);

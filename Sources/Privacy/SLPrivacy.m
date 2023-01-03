@@ -114,8 +114,13 @@ static NSSet *Names(NSArray *defaults, id configured, NSString *field) {
         ([type isEqual:@"application/json"] || [type hasSuffix:@"+json"]) &&
         (!encoding || [encoding.lowercaseString isEqual:@"identity"])) {
         @try {
-            body = SLJSONData([self sanitizeJSON:SLJSONRead(message.body)]);
-            state = @"json";
+            NSData *filtered = SLJSONData([self sanitizeJSON:SLJSONRead(message.body)]);
+            // Canonical escaping can expand a valid entity. The persisted
+            // representation must satisfy the same bound as imported fixtures.
+            if (filtered.length <= 8 * 1024 * 1024) {
+                body = filtered;
+                state = @"json";
+            }
         } @catch (SLError *error) { /* Invalid or over-budget JSON stays omitted. */
         }
     }

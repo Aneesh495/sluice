@@ -112,3 +112,30 @@ a failing test before the fix.
   coverage, and static-analysis compilation. The native deallocation regression
   fails immediately if the flag is removed.
 - Reference: [Clang ARC exception semantics](https://clang.llvm.org/docs/AutomaticReferenceCounting.html#exceptions).
+
+## SL-012: an overflowing CLI integer silently saturated
+
+- Reproducer: `CLI integer overflow is rejected instead of saturated`.
+- Before: an occurrence spelling larger than INT64_MAX was accepted as
+  INT64_MAX because NSScanner saturated rather than reporting overflow.
+- Fix: parse the complete decimal spelling with explicit ERANGE checking before
+  applying the field's bounds. Exact INT64 endpoints remain valid where allowed.
+
+## SL-013: plan truth types and embedded receipt schemas were incomplete
+
+- Reproducers: `plan truth values retain JSON boolean types` and
+  `receipt validation covers the complete embedded plan schema`.
+- Before: a C logical expression boxed truncation as integer 0/1, and receipt
+  validation could accept a plan with a string status or unknown fields.
+- Fix: preserve boolean boxing explicitly and validate the entire plan summary,
+  including field types, digests, timing order, segment arithmetic, and byte
+  accounting, both at construction and when reading receipts.
+
+## SL-014: canonical escaping could exceed the captured body budget
+
+- Reproducer: `canonical JSON expansion cannot exceed the captured body budget`.
+- Before: a valid entity below 8 MiB could grow beyond 8 MiB during canonical
+  escaping and then fail fixture validation during live capture.
+- Fix: apply the body budget to the filtered representation too. An over-budget
+  canonical entity stays omitted, so recording remains valid and replay refuses
+  the missing body explicitly.

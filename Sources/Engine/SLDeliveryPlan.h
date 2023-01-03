@@ -16,4 +16,5 @@ NS_ASSUME_NONNULL_BEGIN
 - (NSRange)rangeAt:(NSUInteger)index;
 - (uint64_t)dueUSAt:(NSUInteger)index;
 @end
+FOUNDATION_EXPORT void SLValidatePlanSummary(NSDictionary *summary);
 NS_ASSUME_NONNULL_END

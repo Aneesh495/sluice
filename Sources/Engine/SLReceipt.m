@@ -1,4 +1,5 @@
 #import "SLReceipt.h"
+#import "SLDeliveryPlan.h"
 #import "SLJSON.h"
 #import "SLBytes.h"
 #import "SLError.h"
@@ -63,6 +64,7 @@ void SLValidateReceipt(NSDictionary *r) {
         SLString(r[@"error"], 128, @"error");
     if (r[@"plan"]) {
         NSDictionary *plan = SLObject(r[@"plan"], @"plan");
+        SLValidatePlanSummary(plan);
         int64_t wire = SLInteger(plan[@"wireBytes"], 0, 9 * 1024 * 1024, @"wireBytes");
         SLRequire(accepted <= wire, @"receipt.bytes", @"Accepted bytes exceed planned wire bytes");
         SLRequire([plan[@"identity"] isEqual:r[@"identity"]] &&
