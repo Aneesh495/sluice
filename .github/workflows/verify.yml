@@ -17,6 +17,8 @@ jobs:
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Validate the source-bound verification snapshot
+        run: make verify
       - name: Build native application and exercise core behavior
         run: make all app test integration differential analyze
       - name: Check content-addressed build behavior

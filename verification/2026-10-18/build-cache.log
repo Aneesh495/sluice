@@ -1,0 +1,6 @@
+test_same_timestamp_source_change_invalidates_object (__main__.BuildTests.test_same_timestamp_source_change_invalidates_object) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.457s
+
+OK

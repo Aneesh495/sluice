@@ -1,0 +1,1427 @@
+{
+  "version": 1,
+  "profiles": 53,
+  "files": [
+    {
+      "file": "Sources/Analysis/SLDiff.m",
+      "summary": {
+        "branches": {
+          "count": 56,
+          "covered": 25,
+          "notcovered": 31,
+          "percent": 44.642857142857146
+        },
+        "functions": {
+          "count": 6,
+          "covered": 4,
+          "percent": 66.66666666666666
+        },
+        "instantiations": {
+          "count": 6,
+          "covered": 4,
+          "percent": 66.66666666666666
+        },
+        "lines": {
+          "count": 105,
+          "covered": 49,
+          "percent": 46.666666666666664
+        },
+        "mcdc": {
+          "count": 0,
+          "covered": 0,
+          "notcovered": 0,
+          "percent": 0
+        },
+        "regions": {
+          "count": 88,
+          "covered": 59,
+          "notcovered": 29,
+          "percent": 67.04545454545455
+        }
+      }
+    },
+    {
+      "file": "Sources/Analysis/SLReport.m",
+      "summary": {
+        "branches": {
+          "count": 12,
+          "covered": 10,
+          "notcovered": 2,
+          "percent": 83.33333333333334
+        },
+        "functions": {
+          "count": 3,
+          "covered": 3,
+          "percent": 100
+        },
+        "instantiations": {
+          "count": 3,
+          "covered": 3,
+          "percent": 100
+        },
+        "lines": {
+          "count": 53,
+          "covered": 48,
+          "percent": 90.56603773584906
+        },
+        "mcdc": {
+          "count": 0,
+          "covered": 0,
+          "notcovered": 0,
+          "percent": 0
+        },
+        "regions": {
+          "count": 26,
+          "covered": 24,
+          "notcovered": 2,
+          "percent": 92.3076923076923
+        }
+      }
+    },
+    {
+      "file": "Sources/App/SLAppController.m",
+      "summary": {
+        "branches": {
+          "count": 164,
+          "covered": 39,
+          "notcovered": 125,
+          "percent": 23.78048780487805
+        },
+        "functions": {
+          "count": 50,
+          "covered": 19,
+          "percent": 38
+        },
+        "instantiations": {
+          "count": 50,
+          "covered": 19,
+          "percent": 38
+        },
+        "lines": {
+          "count": 1016,
+          "covered": 590,
+          "percent": 58.07086614173228
+        },
+        "mcdc": {
+          "count": 0,
+          "covered": 0,
+          "notcovered": 0,
+          "percent": 0
+        },
+        "regions": {
+          "count": 340,
+          "covered": 147,
+          "notcovered": 193,
+          "percent": 43.23529411764706
+        }
+      }
+    },
+    {
+      "file": "Sources/App/SLInspector.m",
+      "summary": {
+        "branches": {
+          "count": 10,
+          "covered": 4,
+          "notcovered": 6,
+          "percent": 40
+        },
+        "functions": {
+          "count": 7,
+          "covered": 3,
+          "percent": 42.857142857142854
+        },
+        "instantiations": {
+          "count": 7,
+          "covered": 3,
+          "percent": 42.857142857142854
+        },
+        "lines": {
+          "count": 137,
+          "covered": 85,
+          "percent": 62.04379562043796
+        },
+        "mcdc": {
+          "count": 0,
+          "covered": 0,
+          "notcovered": 0,
+          "percent": 0
+        },
+        "regions": {
+          "count": 71,
+          "covered": 47,
+          "notcovered": 24,
+          "percent": 66.19718309859155
+        }
+      }
+    },
+    {
+      "file": "Sources/App/SLTheme.m",
+      "summary": {
+        "branches": {
+          "count": 0,
+          "covered": 0,
+          "notcovered": 0,
+          "percent": 0
+        },
+        "functions": {
+          "count": 8,
+          "covered": 8,
+          "percent": 100
+        },
+        "instantiations": {
+          "count": 8,
+          "covered": 8,
+          "percent": 100
+        },
+        "lines": {
+          "count": 37,
+          "covered": 37,
+          "percent": 100
+        },
+        "mcdc": {
+          "count": 0,
+          "covered": 0,
+          "notcovered": 0,
+          "percent": 0
+        },
+        "regions": {
+          "count": 8,
+          "covered": 8,
+          "notcovered": 0,
+          "percent": 100
+        }
+      }
+    },
+    {
+      "file": "Sources/App/SLTimelineView.m",
+      "summary": {
+        "branches": {
+          "count": 16,
+          "covered": 2,
+          "notcovered": 14,
+          "percent": 12.5
+        },
+        "functions": {
+          "count": 6,
+          "covered": 6,
+          "percent": 100
+        },
+        "instantiations": {
+          "count": 6,
+          "covered": 6,
+          "percent": 100
+        },
+        "lines": {
+          "count": 76,
+          "covered": 34,
+          "percent": 44.73684210526316
+        },
+        "mcdc": {
+          "count": 0,
+          "covered": 0,
+          "notcovered": 0,
+          "percent": 0
+        },
+        "regions": {
+          "count": 65,
+          "covered": 15,
+          "notcovered": 50,
+          "percent": 23.076923076923077
+        }
+      }
+    },
+    {
+      "file": "Sources/App/main.m",
+      "summary": {
+        "branches": {
+          "count": 0,
+          "covered": 0,
+          "notcovered": 0,
+          "percent": 0
+        },
+        "functions": {
+          "count": 1,
+          "covered": 1,
+          "percent": 100
+        },
+        "instantiations": {
+          "count": 1,
+          "covered": 1,
+          "percent": 100
+        },
+        "lines": {
+          "count": 10,
+          "covered": 10,
+          "percent": 100
+        },
+        "mcdc": {
+          "count": 0,
+          "covered": 0,
+          "notcovered": 0,
+          "percent": 0
+        },
+        "regions": {
+          "count": 1,
+          "covered": 1,
+          "notcovered": 0,
+          "percent": 100
+        }
+      }
+    },
+    {
+      "file": "Sources/CLI/main.m",
+      "summary": {
+        "branches": {
+          "count": 70,
+          "covered": 45,
+          "notcovered": 25,
+          "percent": 64.28571428571429
+        },
+        "functions": {
+          "count": 8,
+          "covered": 5,
+          "percent": 62.5
+        },
+        "instantiations": {
+          "count": 8,
+          "covered": 5,
+          "percent": 62.5
+        },
+        "lines": {
+          "count": 289,
+          "covered": 196,
+          "percent": 67.82006920415225
+        },
+        "mcdc": {
+          "count": 0,
+          "covered": 0,
+          "notcovered": 0,
+          "percent": 0
+        },
+        "regions": {
+          "count": 121,
+          "covered": 89,
+          "notcovered": 32,
+          "percent": 73.55371900826447
+        }
+      }
+    },
+    {
+      "file": "Sources/Core/SLArguments.m",
+      "summary": {
+        "branches": {
+          "count": 42,
+          "covered": 26,
+          "notcovered": 16,
+          "percent": 61.904761904761905
+        },
+        "functions": {
+          "count": 5,
+          "covered": 5,
+          "percent": 100
+        },
+        "instantiations": {
+          "count": 5,
+          "covered": 5,
+          "percent": 100
+        },
+        "lines": {
+          "count": 64,
+          "covered": 58,
+          "percent": 90.625
+        },
+        "mcdc": {
+          "count": 0,
+          "covered": 0,
+          "notcovered": 0,
+          "percent": 0
+        },
+        "regions": {
+          "count": 56,
+          "covered": 53,
+          "notcovered": 3,
+          "percent": 94.64285714285714
+        }
+      }
+    },
+    {
+      "file": "Sources/Core/SLBytes.m",
+      "summary": {
+        "branches": {
+          "count": 57,
+          "covered": 39,
+          "notcovered": 18,
+          "percent": 68.42105263157895
+        },
+        "functions": {
+          "count": 8,
+          "covered": 8,
+          "percent": 100
+        },
+        "instantiations": {
+          "count": 8,
+          "covered": 8,
+          "percent": 100
+        },
+        "lines": {
+          "count": 118,
+          "covered": 110,
+          "percent": 93.22033898305084
+        },
+        "mcdc": {
+          "count": 0,
+          "covered": 0,
+          "notcovered": 0,
+          "percent": 0
+        },
+        "regions": {
+          "count": 115,
+          "covered": 100,
+          "notcovered": 15,
+          "percent": 86.95652173913044
+        }
+      }
+    },
+    {
+      "file": "Sources/Core/SLError.h",
+      "summary": {
+        "branches": {
+          "count": 2,
+          "covered": 2,
+          "notcovered": 0,
+          "percent": 100
+        },
+        "functions": {
+          "count": 1,
+          "covered": 1,
+          "percent": 100
+        },
+        "instantiations": {
+          "count": 39,
+          "covered": 39,
+          "percent": 100
+        },
+        "lines": {
+          "count": 4,
+          "covered": 4,
+          "percent": 100
+        },
+        "mcdc": {
+          "count": 0,
+          "covered": 0,
+          "notcovered": 0,
+          "percent": 0
+        },
+        "regions": {
+          "count": 3,
+          "covered": 3,
+          "notcovered": 0,
+          "percent": 100
+        }
+      }
+    },
+    {
+      "file": "Sources/Core/SLError.m",
+      "summary": {
+        "branches": {
+          "count": 24,
+          "covered": 17,
+          "notcovered": 7,
+          "percent": 70.83333333333334
+        },
+        "functions": {
+          "count": 10,
+          "covered": 10,
+          "percent": 100
+        },
+        "instantiations": {
+          "count": 10,
+          "covered": 10,
+          "percent": 100
+        },
+        "lines": {
+          "count": 54,
+          "covered": 54,
+          "percent": 100
+        },
+        "mcdc": {
+          "count": 0,
+          "covered": 0,
+          "notcovered": 0,
+          "percent": 0
+        },
+        "regions": {
+          "count": 31,
+          "covered": 31,
+          "notcovered": 0,
+          "percent": 100
+        }
+      }
+    },
+    {
+      "file": "Sources/Core/SLJSON.m",
+      "summary": {
+        "branches": {
+          "count": 69,
+          "covered": 60,
+          "notcovered": 9,
+          "percent": 86.95652173913044
+        },
+        "functions": {
+          "count": 8,
+          "covered": 8,
+          "percent": 100
+        },
+        "instantiations": {
+          "count": 8,
+          "covered": 8,
+          "percent": 100
+        },
+        "lines": {
+          "count": 115,
+          "covered": 115,
+          "percent": 100
+        },
+        "mcdc": {
+          "count": 0,
+          "covered": 0,
+          "notcovered": 0,
+          "percent": 0
+        },
+        "regions": {
+          "count": 90,
+          "covered": 90,
+          "notcovered": 0,
+          "percent": 100
+        }
+      }
+    },
+    {
+      "file": "Sources/Engine/SLDeliveryPlan.m",
+      "summary": {
+        "branches": {
+          "count": 80,
+          "covered": 65,
+          "notcovered": 15,
+          "percent": 81.25
+        },
+        "functions": {
+          "count": 5,
+          "covered": 5,
+          "percent": 100
+        },
+        "instantiations": {
+          "count": 5,
+          "covered": 5,
+          "percent": 100
+        },
+        "lines": {
+          "count": 122,
+          "covered": 122,
+          "percent": 100
+        },
+        "mcdc": {
+          "count": 0,
+          "covered": 0,
+          "notcovered": 0,
+          "percent": 0
+        },
+        "regions": {
+          "count": 102,
+          "covered": 101,
+          "notcovered": 1,
+          "percent": 99.01960784313727
+        }
+      }
+    },
+    {
+      "file": "Sources/Engine/SLReceipt.m",
+      "summary": {
+        "branches": {
+          "count": 16,
+          "covered": 15,
+          "notcovered": 1,
+          "percent": 93.75
+        },
+        "functions": {
+          "count": 2,
+          "covered": 2,
+          "percent": 100
+        },
+        "instantiations": {
+          "count": 2,
+          "covered": 2,
+          "percent": 100
+        },
+        "lines": {
+          "count": 66,
+          "covered": 66,
+          "percent": 100
+        },
+        "mcdc": {
+          "count": 0,
+          "covered": 0,
+          "notcovered": 0,
+          "percent": 0
+        },
+        "regions": {
+          "count": 24,
+          "covered": 24,
+          "notcovered": 0,
+          "percent": 100
+        }
+      }
+    },
+    {
+      "file": "Sources/Engine/SLReplayIndex.m",
+      "summary": {
+        "branches": {
+          "count": 18,
+          "covered": 16,
+          "notcovered": 2,
+          "percent": 88.88888888888889
+        },
+        "functions": {
+          "count": 2,
+          "covered": 2,
+          "percent": 100
+        },
+        "instantiations": {
+          "count": 2,
+          "covered": 2,
+          "percent": 100
+        },
+        "lines": {
+          "count": 46,
+          "covered": 38,
+          "percent": 82.6086956521739
+        },
+        "mcdc": {
+          "count": 0,
+          "covered": 0,
+          "notcovered": 0,
+          "percent": 0
+        },
+        "regions": {
+          "count": 28,
+          "covered": 26,
+          "notcovered": 2,
+          "percent": 92.85714285714286
+        }
+      }
+    },
+    {
+      "file": "Sources/Engine/SLSession.m",
+      "summary": {
+        "branches": {
+          "count": 16,
+          "covered": 13,
+          "notcovered": 3,
+          "percent": 81.25
+        },
+        "functions": {
+          "count": 5,
+          "covered": 5,
+          "percent": 100
+        },
+        "instantiations": {
+          "count": 5,
+          "covered": 5,
+          "percent": 100
+        },
+        "lines": {
+          "count": 65,
+          "covered": 65,
+          "percent": 100
+        },
+        "mcdc": {
+          "count": 0,
+          "covered": 0,
+          "notcovered": 0,
+          "percent": 0
+        },
+        "regions": {
+          "count": 27,
+          "covered": 27,
+          "notcovered": 0,
+          "percent": 100
+        }
+      }
+    },
+    {
+      "file": "Sources/Engine/SLTape.m",
+      "summary": {
+        "branches": {
+          "count": 40,
+          "covered": 25,
+          "notcovered": 15,
+          "percent": 62.5
+        },
+        "functions": {
+          "count": 5,
+          "covered": 5,
+          "percent": 100
+        },
+        "instantiations": {
+          "count": 5,
+          "covered": 5,
+          "percent": 100
+        },
+        "lines": {
+          "count": 102,
+          "covered": 100,
+          "percent": 98.0392156862745
+        },
+        "mcdc": {
+          "count": 0,
+          "covered": 0,
+          "notcovered": 0,
+          "percent": 0
+        },
+        "regions": {
+          "count": 51,
+          "covered": 50,
+          "notcovered": 1,
+          "percent": 98.0392156862745
+        }
+      }
+    },
+    {
+      "file": "Sources/HTTP/SLChunkDecoder.m",
+      "summary": {
+        "branches": {
+          "count": 39,
+          "covered": 29,
+          "notcovered": 10,
+          "percent": 74.35897435897436
+        },
+        "functions": {
+          "count": 5,
+          "covered": 5,
+          "percent": 100
+        },
+        "instantiations": {
+          "count": 5,
+          "covered": 5,
+          "percent": 100
+        },
+        "lines": {
+          "count": 68,
+          "covered": 68,
+          "percent": 100
+        },
+        "mcdc": {
+          "count": 0,
+          "covered": 0,
+          "notcovered": 0,
+          "percent": 0
+        },
+        "regions": {
+          "count": 65,
+          "covered": 61,
+          "notcovered": 4,
+          "percent": 93.84615384615384
+        }
+      }
+    },
+    {
+      "file": "Sources/HTTP/SLHTTPParser.m",
+      "summary": {
+        "branches": {
+          "count": 46,
+          "covered": 42,
+          "notcovered": 4,
+          "percent": 91.30434782608695
+        },
+        "functions": {
+          "count": 5,
+          "covered": 4,
+          "percent": 80
+        },
+        "instantiations": {
+          "count": 5,
+          "covered": 4,
+          "percent": 80
+        },
+        "lines": {
+          "count": 77,
+          "covered": 75,
+          "percent": 97.40259740259741
+        },
+        "mcdc": {
+          "count": 0,
+          "covered": 0,
+          "notcovered": 0,
+          "percent": 0
+        },
+        "regions": {
+          "count": 71,
+          "covered": 68,
+          "notcovered": 3,
+          "percent": 95.77464788732394
+        }
+      }
+    },
+    {
+      "file": "Sources/HTTP/SLHead.m",
+      "summary": {
+        "branches": {
+          "count": 66,
+          "covered": 45,
+          "notcovered": 21,
+          "percent": 68.18181818181817
+        },
+        "functions": {
+          "count": 2,
+          "covered": 2,
+          "percent": 100
+        },
+        "instantiations": {
+          "count": 2,
+          "covered": 2,
+          "percent": 100
+        },
+        "lines": {
+          "count": 85,
+          "covered": 85,
+          "percent": 100
+        },
+        "mcdc": {
+          "count": 0,
+          "covered": 0,
+          "notcovered": 0,
+          "percent": 0
+        },
+        "regions": {
+          "count": 47,
+          "covered": 47,
+          "notcovered": 0,
+          "percent": 100
+        }
+      }
+    },
+    {
+      "file": "Sources/HTTP/SLHeaders.m",
+      "summary": {
+        "branches": {
+          "count": 12,
+          "covered": 10,
+          "notcovered": 2,
+          "percent": 83.33333333333334
+        },
+        "functions": {
+          "count": 6,
+          "covered": 6,
+          "percent": 100
+        },
+        "instantiations": {
+          "count": 6,
+          "covered": 6,
+          "percent": 100
+        },
+        "lines": {
+          "count": 56,
+          "covered": 56,
+          "percent": 100
+        },
+        "mcdc": {
+          "count": 0,
+          "covered": 0,
+          "notcovered": 0,
+          "percent": 0
+        },
+        "regions": {
+          "count": 21,
+          "covered": 21,
+          "notcovered": 0,
+          "percent": 100
+        }
+      }
+    },
+    {
+      "file": "Sources/HTTP/SLMessage.m",
+      "summary": {
+        "branches": {
+          "count": 4,
+          "covered": 2,
+          "notcovered": 2,
+          "percent": 50
+        },
+        "functions": {
+          "count": 3,
+          "covered": 3,
+          "percent": 100
+        },
+        "instantiations": {
+          "count": 3,
+          "covered": 3,
+          "percent": 100
+        },
+        "lines": {
+          "count": 46,
+          "covered": 46,
+          "percent": 100
+        },
+        "mcdc": {
+          "count": 0,
+          "covered": 0,
+          "notcovered": 0,
+          "percent": 0
+        },
+        "regions": {
+          "count": 7,
+          "covered": 6,
+          "notcovered": 1,
+          "percent": 85.71428571428571
+        }
+      }
+    },
+    {
+      "file": "Sources/HTTP/SLTarget.m",
+      "summary": {
+        "branches": {
+          "count": 52,
+          "covered": 40,
+          "notcovered": 12,
+          "percent": 76.92307692307693
+        },
+        "functions": {
+          "count": 3,
+          "covered": 3,
+          "percent": 100
+        },
+        "instantiations": {
+          "count": 3,
+          "covered": 3,
+          "percent": 100
+        },
+        "lines": {
+          "count": 40,
+          "covered": 40,
+          "percent": 100
+        },
+        "mcdc": {
+          "count": 0,
+          "covered": 0,
+          "notcovered": 0,
+          "percent": 0
+        },
+        "regions": {
+          "count": 51,
+          "covered": 50,
+          "notcovered": 1,
+          "percent": 98.0392156862745
+        }
+      }
+    },
+    {
+      "file": "Sources/HTTP/SLWire.m",
+      "summary": {
+        "branches": {
+          "count": 18,
+          "covered": 9,
+          "notcovered": 9,
+          "percent": 50
+        },
+        "functions": {
+          "count": 3,
+          "covered": 3,
+          "percent": 100
+        },
+        "instantiations": {
+          "count": 3,
+          "covered": 3,
+          "percent": 100
+        },
+        "lines": {
+          "count": 37,
+          "covered": 37,
+          "percent": 100
+        },
+        "mcdc": {
+          "count": 0,
+          "covered": 0,
+          "notcovered": 0,
+          "percent": 0
+        },
+        "regions": {
+          "count": 16,
+          "covered": 16,
+          "notcovered": 0,
+          "percent": 100
+        }
+      }
+    },
+    {
+      "file": "Sources/Network/SLConnection.m",
+      "summary": {
+        "branches": {
+          "count": 6,
+          "covered": 5,
+          "notcovered": 1,
+          "percent": 83.33333333333334
+        },
+        "functions": {
+          "count": 4,
+          "covered": 4,
+          "percent": 100
+        },
+        "instantiations": {
+          "count": 4,
+          "covered": 4,
+          "percent": 100
+        },
+        "lines": {
+          "count": 29,
+          "covered": 29,
+          "percent": 100
+        },
+        "mcdc": {
+          "count": 0,
+          "covered": 0,
+          "notcovered": 0,
+          "percent": 0
+        },
+        "regions": {
+          "count": 12,
+          "covered": 12,
+          "notcovered": 0,
+          "percent": 100
+        }
+      }
+    },
+    {
+      "file": "Sources/Network/SLNet.m",
+      "summary": {
+        "branches": {
+          "count": 31,
+          "covered": 14,
+          "notcovered": 17,
+          "percent": 45.16129032258064
+        },
+        "functions": {
+          "count": 6,
+          "covered": 6,
+          "percent": 100
+        },
+        "instantiations": {
+          "count": 6,
+          "covered": 6,
+          "percent": 100
+        },
+        "lines": {
+          "count": 70,
+          "covered": 62,
+          "percent": 88.57142857142857
+        },
+        "mcdc": {
+          "count": 0,
+          "covered": 0,
+          "notcovered": 0,
+          "percent": 0
+        },
+        "regions": {
+          "count": 78,
+          "covered": 64,
+          "notcovered": 14,
+          "percent": 82.05128205128204
+        }
+      }
+    },
+    {
+      "file": "Sources/Network/SLReactor.m",
+      "summary": {
+        "branches": {
+          "count": 200,
+          "covered": 130,
+          "notcovered": 70,
+          "percent": 65
+        },
+        "functions": {
+          "count": 15,
+          "covered": 15,
+          "percent": 100
+        },
+        "instantiations": {
+          "count": 15,
+          "covered": 15,
+          "percent": 100
+        },
+        "lines": {
+          "count": 371,
+          "covered": 311,
+          "percent": 83.82749326145552
+        },
+        "mcdc": {
+          "count": 0,
+          "covered": 0,
+          "notcovered": 0,
+          "percent": 0
+        },
+        "regions": {
+          "count": 331,
+          "covered": 274,
+          "notcovered": 57,
+          "percent": 82.77945619335347
+        }
+      }
+    },
+    {
+      "file": "Sources/Privacy/SLPrivacy.m",
+      "summary": {
+        "branches": {
+          "count": 64,
+          "covered": 55,
+          "notcovered": 9,
+          "percent": 85.9375
+        },
+        "functions": {
+          "count": 9,
+          "covered": 9,
+          "percent": 100
+        },
+        "instantiations": {
+          "count": 9,
+          "covered": 9,
+          "percent": 100
+        },
+        "lines": {
+          "count": 174,
+          "covered": 173,
+          "percent": 99.42528735632183
+        },
+        "mcdc": {
+          "count": 0,
+          "covered": 0,
+          "notcovered": 0,
+          "percent": 0
+        },
+        "regions": {
+          "count": 89,
+          "covered": 87,
+          "notcovered": 2,
+          "percent": 97.75280898876404
+        }
+      }
+    },
+    {
+      "file": "Sources/Scenario/SLAction.m",
+      "summary": {
+        "branches": {
+          "count": 40,
+          "covered": 32,
+          "notcovered": 8,
+          "percent": 80
+        },
+        "functions": {
+          "count": 2,
+          "covered": 2,
+          "percent": 100
+        },
+        "instantiations": {
+          "count": 2,
+          "covered": 2,
+          "percent": 100
+        },
+        "lines": {
+          "count": 70,
+          "covered": 62,
+          "percent": 88.57142857142857
+        },
+        "mcdc": {
+          "count": 0,
+          "covered": 0,
+          "notcovered": 0,
+          "percent": 0
+        },
+        "regions": {
+          "count": 41,
+          "covered": 34,
+          "notcovered": 7,
+          "percent": 82.92682926829268
+        }
+      }
+    },
+    {
+      "file": "Sources/Scenario/SLMatch.m",
+      "summary": {
+        "branches": {
+          "count": 36,
+          "covered": 14,
+          "notcovered": 22,
+          "percent": 38.88888888888889
+        },
+        "functions": {
+          "count": 2,
+          "covered": 2,
+          "percent": 100
+        },
+        "instantiations": {
+          "count": 2,
+          "covered": 2,
+          "percent": 100
+        },
+        "lines": {
+          "count": 41,
+          "covered": 27,
+          "percent": 65.85365853658537
+        },
+        "mcdc": {
+          "count": 0,
+          "covered": 0,
+          "notcovered": 0,
+          "percent": 0
+        },
+        "regions": {
+          "count": 40,
+          "covered": 22,
+          "notcovered": 18,
+          "percent": 55.00000000000001
+        }
+      }
+    },
+    {
+      "file": "Sources/Scenario/SLRandom.m",
+      "summary": {
+        "branches": {
+          "count": 4,
+          "covered": 4,
+          "notcovered": 0,
+          "percent": 100
+        },
+        "functions": {
+          "count": 1,
+          "covered": 1,
+          "percent": 100
+        },
+        "instantiations": {
+          "count": 1,
+          "covered": 1,
+          "percent": 100
+        },
+        "lines": {
+          "count": 10,
+          "covered": 10,
+          "percent": 100
+        },
+        "mcdc": {
+          "count": 0,
+          "covered": 0,
+          "notcovered": 0,
+          "percent": 0
+        },
+        "regions": {
+          "count": 7,
+          "covered": 7,
+          "notcovered": 0,
+          "percent": 100
+        }
+      }
+    },
+    {
+      "file": "Sources/Scenario/SLScenario.m",
+      "summary": {
+        "branches": {
+          "count": 26,
+          "covered": 22,
+          "notcovered": 4,
+          "percent": 84.61538461538461
+        },
+        "functions": {
+          "count": 5,
+          "covered": 5,
+          "percent": 100
+        },
+        "instantiations": {
+          "count": 5,
+          "covered": 5,
+          "percent": 100
+        },
+        "lines": {
+          "count": 69,
+          "covered": 69,
+          "percent": 100
+        },
+        "mcdc": {
+          "count": 0,
+          "covered": 0,
+          "notcovered": 0,
+          "percent": 0
+        },
+        "regions": {
+          "count": 39,
+          "covered": 39,
+          "notcovered": 0,
+          "percent": 100
+        }
+      }
+    },
+    {
+      "file": "Sources/Storage/SLBundle.m",
+      "summary": {
+        "branches": {
+          "count": 0,
+          "covered": 0,
+          "notcovered": 0,
+          "percent": 0
+        },
+        "functions": {
+          "count": 2,
+          "covered": 2,
+          "percent": 100
+        },
+        "instantiations": {
+          "count": 2,
+          "covered": 2,
+          "percent": 100
+        },
+        "lines": {
+          "count": 46,
+          "covered": 46,
+          "percent": 100
+        },
+        "mcdc": {
+          "count": 0,
+          "covered": 0,
+          "notcovered": 0,
+          "percent": 0
+        },
+        "regions": {
+          "count": 4,
+          "covered": 4,
+          "notcovered": 0,
+          "percent": 100
+        }
+      }
+    },
+    {
+      "file": "Sources/Storage/SLFixture.m",
+      "summary": {
+        "branches": {
+          "count": 10,
+          "covered": 6,
+          "notcovered": 4,
+          "percent": 60
+        },
+        "functions": {
+          "count": 4,
+          "covered": 4,
+          "percent": 100
+        },
+        "instantiations": {
+          "count": 4,
+          "covered": 4,
+          "percent": 100
+        },
+        "lines": {
+          "count": 50,
+          "covered": 50,
+          "percent": 100
+        },
+        "mcdc": {
+          "count": 0,
+          "covered": 0,
+          "notcovered": 0,
+          "percent": 0
+        },
+        "regions": {
+          "count": 15,
+          "covered": 15,
+          "notcovered": 0,
+          "percent": 100
+        }
+      }
+    },
+    {
+      "file": "Sources/Storage/SLHAR.m",
+      "summary": {
+        "branches": {
+          "count": 46,
+          "covered": 24,
+          "notcovered": 22,
+          "percent": 52.17391304347826
+        },
+        "functions": {
+          "count": 3,
+          "covered": 3,
+          "percent": 100
+        },
+        "instantiations": {
+          "count": 3,
+          "covered": 3,
+          "percent": 100
+        },
+        "lines": {
+          "count": 84,
+          "covered": 76,
+          "percent": 90.47619047619048
+        },
+        "mcdc": {
+          "count": 0,
+          "covered": 0,
+          "notcovered": 0,
+          "percent": 0
+        },
+        "regions": {
+          "count": 50,
+          "covered": 39,
+          "notcovered": 11,
+          "percent": 78
+        }
+      }
+    },
+    {
+      "file": "Sources/Storage/SLStore.m",
+      "summary": {
+        "branches": {
+          "count": 38,
+          "covered": 26,
+          "notcovered": 12,
+          "percent": 68.42105263157895
+        },
+        "functions": {
+          "count": 17,
+          "covered": 16,
+          "percent": 94.11764705882352
+        },
+        "instantiations": {
+          "count": 17,
+          "covered": 16,
+          "percent": 94.11764705882352
+        },
+        "lines": {
+          "count": 247,
+          "covered": 235,
+          "percent": 95.1417004048583
+        },
+        "mcdc": {
+          "count": 0,
+          "covered": 0,
+          "notcovered": 0,
+          "percent": 0
+        },
+        "regions": {
+          "count": 90,
+          "covered": 87,
+          "notcovered": 3,
+          "percent": 96.66666666666667
+        }
+      }
+    }
+  ],
+  "core": {
+    "lines": 2873,
+    "covered": 2582,
+    "percent": 89.87
+  },
+  "app": {
+    "lines": 1276,
+    "covered": 756,
+    "percent": 59.25
+  },
+  "all": {
+    "lines": 4149,
+    "covered": 3338,
+    "percent": 80.45
+  }
+}

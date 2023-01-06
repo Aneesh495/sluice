@@ -1,0 +1,6 @@
+test_log_manifest_and_gate_tampering_are_rejected (__main__.EvidenceTests.test_log_manifest_and_gate_tampering_are_rejected) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.185s
+
+OK

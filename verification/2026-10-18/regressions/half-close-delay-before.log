@@ -1,0 +1,54 @@
+xcrun clang -std=gnu11 -fobjc-arc -fblocks -Wall -Wextra -Werror -Wno-unused-parameter -g -O2 -mmacosx-version-min=13.0 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk -ISources/Analysis -ISources/App -ISources/CLI -ISources/Core -ISources/Engine -ISources/HTTP -ISources/Network -ISources/Privacy -ISources/Scenario -ISources/Storage -ITests/Unit  Sources/CLI/main.m build/Sources/Analysis/SLDiff.o build/Sources/Analysis/SLReport.o build/Sources/Core/SLArguments.o build/Sources/Core/SLBytes.o build/Sources/Core/SLError.o build/Sources/Core/SLJSON.o build/Sources/Engine/SLDeliveryPlan.o build/Sources/Engine/SLReceipt.o build/Sources/Engine/SLReplayIndex.o build/Sources/Engine/SLSession.o build/Sources/HTTP/SLChunkDecoder.o build/Sources/HTTP/SLHTTPParser.o build/Sources/HTTP/SLHead.o build/Sources/HTTP/SLHeaders.o build/Sources/HTTP/SLMessage.o build/Sources/HTTP/SLTarget.o build/Sources/HTTP/SLWire.o build/Sources/Network/SLConnection.o build/Sources/Network/SLNet.o build/Sources/Network/SLReactor.o build/Sources/Privacy/SLPrivacy.o build/Sources/Scenario/SLAction.o build/Sources/Scenario/SLMatch.o build/Sources/Scenario/SLRandom.o build/Sources/Scenario/SLScenario.o build/Sources/Storage/SLBundle.o build/Sources/Storage/SLFixture.o build/Sources/Storage/SLHAR.o build/Sources/Storage/SLStore.o -framework Foundation -lsqlite3  -o build/sluice
+SLUICE_BINARY=/Users/aneeshkrishna/Documents/Codex/2026-10-18/build-a-standout-r-project-that/outputs/sluice/build/sluice python3 Tests/Integration/test_workbench.py
+test_ambiguous_fixtures_require_explicit_selection (__main__.WorkbenchTests.test_ambiguous_fixtures_require_explicit_selection) ... ok
+test_bundle_roundtrip_and_rejected_corruption_are_atomic (__main__.WorkbenchTests.test_bundle_roundtrip_and_rejected_corruption_are_atomic) ... ok
+test_chunked_upstream_and_request_entities_are_normalized (__main__.WorkbenchTests.test_chunked_upstream_and_request_entities_are_normalized) ... ok
+test_cli_misspellings_and_invalid_schema_are_errors (__main__.WorkbenchTests.test_cli_misspellings_and_invalid_schema_are_errors) ... ok
+test_client_write_half_close_still_receives_response (__main__.WorkbenchTests.test_client_write_half_close_still_receives_response) ... FAIL
+test_committed_capture_survives_sigkill_and_wal_recovery (__main__.WorkbenchTests.test_committed_capture_survives_sigkill_and_wal_recovery) ... ok
+test_database_payload_tampering_is_detected (__main__.WorkbenchTests.test_database_payload_tampering_is_detected) ... ok
+test_delay_longer_than_backpressure_timeout_remains_valid (__main__.WorkbenchTests.test_delay_longer_than_backpressure_timeout_remains_valid) ... ERROR
+test_first_occurrence_failure_then_success (__main__.WorkbenchTests.test_first_occurrence_failure_then_success) ... ok
+test_head_representation_metadata_survives_offline_replay (__main__.WorkbenchTests.test_head_representation_metadata_survives_offline_replay) ... ok
+test_live_capture_offline_replay_and_receipts (__main__.WorkbenchTests.test_live_capture_offline_replay_and_receipts) ... ok
+test_metadata_capture_is_not_silently_replayed (__main__.WorkbenchTests.test_metadata_capture_is_not_silently_replayed) ... ok
+test_paced_delivery_has_measurable_delay (__main__.WorkbenchTests.test_paced_delivery_has_measurable_delay) ... ok
+test_parallel_clients_keep_independent_valid_receipts (__main__.WorkbenchTests.test_parallel_clients_keep_independent_valid_receipts) ... ok
+test_real_truncation_keeps_original_content_length (__main__.WorkbenchTests.test_real_truncation_keeps_original_content_length) ... ok
+test_secrets_never_reach_database_or_wal (__main__.WorkbenchTests.test_secrets_never_reach_database_or_wal) ... ok
+test_smuggling_and_pipelining_are_rejected (__main__.WorkbenchTests.test_smuggling_and_pipelining_are_rejected) ... ok
+
+======================================================================
+ERROR: test_delay_longer_than_backpressure_timeout_remains_valid (__main__.WorkbenchTests.test_delay_longer_than_backpressure_timeout_remains_valid)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/aneeshkrishna/Documents/Codex/2026-10-18/build-a-standout-r-project-that/outputs/sluice/Tests/Integration/test_workbench.py", line 346, in test_delay_longer_than_backpressure_timeout_remains_valid
+    status, _, _ = request(proxy.port, timeout=25)
+                   ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/aneeshkrishna/Documents/Codex/2026-10-18/build-a-standout-r-project-that/outputs/sluice/Tests/Integration/test_workbench.py", line 117, in request
+    response = connection.getresponse()
+  File "/Library/Frameworks/Python.framework/Versions/3.14/lib/python3.14/http/client.py", line 1450, in getresponse
+    response.begin()
+    ~~~~~~~~~~~~~~^^
+  File "/Library/Frameworks/Python.framework/Versions/3.14/lib/python3.14/http/client.py", line 336, in begin
+    version, status, reason = self._read_status()
+                              ~~~~~~~~~~~~~~~~~^^
+  File "/Library/Frameworks/Python.framework/Versions/3.14/lib/python3.14/http/client.py", line 305, in _read_status
+    raise RemoteDisconnected("Remote end closed connection without"
+                             " response")
+http.client.RemoteDisconnected: Remote end closed connection without response
+
+======================================================================
+FAIL: test_client_write_half_close_still_receives_response (__main__.WorkbenchTests.test_client_write_half_close_still_receives_response)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/aneeshkrishna/Documents/Codex/2026-10-18/build-a-standout-r-project-that/outputs/sluice/Tests/Integration/test_workbench.py", line 339, in test_client_write_half_close_still_receives_response
+    self.assertTrue(b"".join(chunks).startswith(b"HTTP/1.1 200"))
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: False is not true
+
+----------------------------------------------------------------------
+Ran 17 tests in 18.135s
+
+FAILED (failures=1, errors=1)
+make: *** [integration] Error 1

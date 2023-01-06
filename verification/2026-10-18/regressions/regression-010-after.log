@@ -1,0 +1,36 @@
+xcrun clang -std=gnu11 -fobjc-arc -fblocks -Wall -Wextra -Werror -Wno-unused-parameter -g -O2 -mmacosx-version-min=13.0 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk -ISources/Analysis -ISources/App -ISources/CLI -ISources/Core -ISources/Engine -ISources/HTTP -ISources/Network -ISources/Privacy -ISources/Scenario -ISources/Storage -ITests/Unit  Tests/Unit/AnalysisTests.m Tests/Unit/CoreTests.m Tests/Unit/HTTPTests.m Tests/Unit/JSONTests.m Tests/Unit/ParserTests.m Tests/Unit/PrivacyTests.m Tests/Unit/ScenarioTests.m Tests/Unit/StorageTests.m Tests/Unit/TapeTests.m Tests/Unit/main.m build/Sources/Analysis/SLDiff.o build/Sources/Analysis/SLReport.o build/Sources/Core/SLArguments.o build/Sources/Core/SLBytes.o build/Sources/Core/SLError.o build/Sources/Core/SLJSON.o build/Sources/Engine/SLDeliveryPlan.o build/Sources/Engine/SLReceipt.o build/Sources/Engine/SLReplayIndex.o build/Sources/Engine/SLSession.o build/Sources/Engine/SLTape.o build/Sources/HTTP/SLChunkDecoder.o build/Sources/HTTP/SLHTTPParser.o build/Sources/HTTP/SLHead.o build/Sources/HTTP/SLHeaders.o build/Sources/HTTP/SLMessage.o build/Sources/HTTP/SLTarget.o build/Sources/HTTP/SLWire.o build/Sources/Network/SLConnection.o build/Sources/Network/SLNet.o build/Sources/Network/SLReactor.o build/Sources/Privacy/SLPrivacy.o build/Sources/Scenario/SLAction.o build/Sources/Scenario/SLMatch.o build/Sources/Scenario/SLRandom.o build/Sources/Scenario/SLScenario.o build/Sources/Storage/SLBundle.o build/Sources/Storage/SLFixture.o build/Sources/Storage/SLHAR.o build/Sources/Storage/SLStore.o -framework Foundation -lsqlite3  -o build/unit
+build/unit
+ok 1 - strict integer validation
+ok 2 - unknown and missing fields are rejected
+ok 3 - tape preserves per-identity order and explicit exhaustion
+ok 4 - tape rejects gaps duplicate occurrences and missing references
+ok 5 - JSON diff escapes pointer components and bounds output
+ok 6 - delivery report uses nearest-rank percentiles and distinct outcomes
+ok 7 - HAR passes decoded entities through privacy and strips stale compression
+ok 8 - HAR unavailable response body is rejected
+ok 9 - fixture message access cannot mutate validated content
+ok 10 - store deduplicates identical captures and survives reopen
+ok 11 - fixture import rolls back every insertion on conflicting id
+ok 12 - bundle validates checksums before mutation
+ok 13 - store integrity checks detect tampered lookup indexes
+ok 14 - HEAD preserves representation length through capture and replay
+ok 15 - validated scenario cannot be mutated through caller containers
+ok 16 - occurrence selection is per identity with exact boundaries
+ok 17 - delivery plan preserves advertised length on real truncation
+ok 18 - HEAD and disconnect plans do not emit entity bytes
+ok 19 - scenario rejects misspellings invalid rates and duplicate ids
+ok 20 - privacy removes credentials and decoded query secrets
+ok 21 - nested JSON keys are redacted before canonical encoding
+ok 22 - identity is stable across host replacement and secret rotation
+ok 23 - chunk overhead does not make validity depend on feed fragment size
+ok 24 - request parser is invariant under every two-way split
+ok 25 - chunk parser works byte by byte and across all splits
+ok 26 - EOF framing and incomplete messages
+ok 27 - framing ambiguities and unsupported protocols fail closed
+ok 28 - origin target and endpoint restrictions
+ok 29 - headers preserve repeats and remove named hop fields
+ok 30 - JSON rejects NUL bytes instead of treating them as whitespace
+ok 31 - strict JSON roundtrip and sorted keys
+ok 32 - JSON rejects duplicate escaped keys
+ok 33 - JSON nesting is bounded
+# 33 tests, 0 failed

@@ -1,0 +1,24 @@
+{
+  "objectiveCProductionIncludingHeaders": {
+    "files": 70,
+    "physical": 4681,
+    "code": 4625,
+    "commentsOnly": 46,
+    "blank": 10
+  },
+  "objectiveCTestsIncludingHeaders": {
+    "files": 15,
+    "physical": 849,
+    "code": 845,
+    "commentsOnly": 2,
+    "blank": 2
+  },
+  "pythonGlueAndTests": {
+    "files": 12,
+    "physical": 936,
+    "code": 811,
+    "commentsOnly": 9,
+    "blank": 116
+  },
+  "documentationLines": 1414
+}
